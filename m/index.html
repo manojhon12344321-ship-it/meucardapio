@@ -1,56 +1,140 @@
 <!DOCTYPE html>
 <html lang="pt-BR">
-<head><meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1.0"><title>Mesa - Garçom NFC</title><script src="https://cdn.tailwindcss.com"></script><style>@import url('https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@700;900&display=swap');body{font-family:'Space Grotesk'}@keyframes b{0%,100%{transform:translateY(0)}50%{transform:translateY(-4px)}}.pulse{animation:b 1s infinite}</style></head>
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Mesa - Meu Cardápio NFC</title>
+<script src="https://cdn.tailwindcss.com"></script>
+<link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@700;900&display=swap" rel="stylesheet">
+<style>body{font-family:'Space Grotesk',sans-serif}@keyframes bounce{0%,100%{transform:translateY(0)}50%{transform:translateY(-5px)}}.bounce{animation:bounce 1.2s infinite}</style>
+</head>
 <body class="bg-[#080808] text-white min-h-screen">
-<div id="loading" class="p-10 text-center"><p class="text-3xl font-black">🍔 Abrindo cardápio...</p><div class="w-10 h-10 border-4 border-yellow-400 border-t-transparent rounded-full animate-spin mx-auto mt-6"></div></div>
-<div id="card" class="hidden max-w-md mx-auto pb-[90px]">
-<div class="bg-[#161616] p-5 flex justify-between items-center sticky top-0 z-10 border-b border-white/10"><div><h1 id="restNome" class="font-black text-lg">Restaurante</h1><p id="mesaNome" class="text-yellow-400 font-black">MESA 4</p></div><div class="bg-green-500/20 text-green-400 px-3 py-1 rounded-full text-xs">● Aberto</div></div>
-<div class="p-4"><div id="categorias" class="flex gap-2 overflow-auto pb-2"></div><div id="menu" class="mt-4 grid gap-3"></div></div>
-<div class="fixed bottom-0 left-0 right-0 bg-[#161616] border-t border-white/10 p-4 max-w-md mx-auto"><div class="flex justify-between items-center"><div><p class="text-xs text-gray-400">Mesa <span id="mesaNum">4</span> • <span id="qtd">0</span> itens</p><p id="total" class="font-black text-xl">R$ 0,00</p></div><button id="btnVer" class="bg-yellow-400 text-black px-6 py-3 rounded-full font-black">Ver Pedido</button></div></div>
-<div id="modal" class="hidden fixed inset-0 bg-black/80 z-20 p-4 flex items-end md:items-center justify-center"><div class="bg-[#1c1c1c] rounded-[28px] p-6 w-full max-w-md"><div class="flex justify-between"><h3 class="font-black text-xl">Seu pedido</h3><button onclick="fechar()" class="bg-white/10 w-8 h-8 rounded-full">✕</button></div><div id="carrinho" class="mt-4 space-y-2 max-h-[40vh] overflow-auto"></div><div class="border-t border-white/10 mt-4 pt-4"><p id="totalModal" class="font-black text-2xl">Total: R$ 0,00</p><input id="obs" class="w-full mt-3 bg-black border border-white/10 p-3 rounded-xl text-sm" placeholder="Obs: sem cebola, ponto da carne..."><button id="btnEnviar" class="w-full mt-4 bg-[#25D366] text-black py-4 rounded-xl font-black text-lg pulse">📱 ENVIAR NO WHATS DA COZINHA</button><button onclick="chamarGarcom()" class="w-full mt-3 bg-white/10 py-3 rounded-xl text-sm">🔔 CHAMAR GARÇOM</button></div></div></div>
+<div id="loading" class="p-10 text-center"><p class="text-2xl font-black">🍔 Abrindo cardápio...</p><div class="w-10 h-10 border-4 border-yellow-400 border-t-transparent rounded-full animate-spin mx-auto mt-6"></div><p id="debug" class="text-[10px] text-gray-500 mt-4"></p></div>
+
+<div id="card" class="hidden max-w-md mx-auto pb-[100px]">
+  <div class="bg-[#161616] p-5 flex justify-between items-center sticky top-0 z-10 border-b border-white/10">
+    <div><h1 id="restNome" class="font-black text-lg leading-5">Restaurante</h1><p id="mesaNome" class="text-yellow-400 font-black text-sm mt-1">MESA 4</p></div>
+    <span class="bg-green-500/20 text-green-400 px-3 py-1 rounded-full text-[10px] font-black">● ABERTO</span>
+  </div>
+  <div class="p-4">
+    <div id="categorias" class="flex gap-2 overflow-auto pb-2"></div>
+    <div id="menu" class="mt-4 grid gap-3"></div>
+  </div>
+  <div class="fixed bottom-0 left-0 right-0 bg-[#161616] border-t border-white/10 p-4 max-w-md mx-auto z-10">
+    <div class="flex justify-between items-center">
+      <div><p class="text-[11px] text-gray-400">Mesa <span id="mesaNum">4</span> • <span id="qtd">0</span> itens</p><p id="total" class="font-black text-xl">R$ 0,00</p></div>
+      <button id="btnVer" class="bg-yellow-400 text-black px-6 py-3 rounded-full font-black text-sm">Ver Pedido</button>
+    </div>
+  </div>
+  <div id="modal" class="hidden fixed inset-0 bg-black/80 z-20 p-4 flex items-end md:items-center justify-center">
+    <div class="bg-[#1c1c1c] rounded-[28px] p-6 w-full max-w-md">
+      <div class="flex justify-between items-center"><h3 class="font-black text-xl">Seu pedido</h3><button onclick="fechar()" class="bg-white/10 w-8 h-8 rounded-full text-xs">✕</button></div>
+      <div id="carrinho" class="mt-4 space-y-2 max-h-[35vh] overflow-auto"></div>
+      <div class="border-t border-white/10 mt-4 pt-4">
+        <p id="totalModal" class="font-black text-2xl">Total: R$ 0,00</p>
+        <input id="obs" class="w-full mt-3 bg-black border border-white/10 p-3 rounded-xl text-sm" placeholder="Observação: sem cebola...">
+        <button id="btnEnviar" class="w-full mt-4 bg-[#25D366] text-black py-4 rounded-xl font-black text-lg bounce">📱 ENVIAR NO WHATS DA COZINHA</button>
+        <button onclick="chamarGarcom()" class="w-full mt-3 bg-white/10 py-3 rounded-xl text-sm font-bold">🔔 CHAMAR GARÇOM</button>
+      </div>
+    </div>
+  </div>
 </div>
+
 <script type="module">
 import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-app.js";
 import { getFirestore, collection, query, where, getDocs, addDoc, serverTimestamp } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js";
-const firebaseConfig = { apiKey: "AIzaSyBBnA9orBCf3j1_3nRHWcIctLe7aKMgcI8", authDomain: "mapapet-ad359.firebaseapp.com", projectId: "mapapet-ad359", storageBucket: "mapapet-ad359.firebasestorage.app", messagingSenderId: "268931015194", appId: "1:268931015194:web:5ae634751c3be46ebe67a3" };
-const app = initializeApp(firebaseConfig); const db = getFirestore(app);
+
+const firebaseConfig = {
+  apiKey: "AIzaSyBBnA9orBCf3j1_3nRHWcIctLe7aKMgcI8",
+  authDomain: "mapapet-ad359.firebaseapp.com",
+  projectId: "mapapet-ad359",
+  storageBucket: "mapapet-ad359.firebasestorage.app",
+  messagingSenderId: "268931015194",
+  appId: "1:268931015194:web:5ae634751c3be46ebe67a3"
+};
+
+const app = initializeApp(firebaseConfig);
+const db = getFirestore(app);
 const sid = new URLSearchParams(location.search).get('sid') || 'DEMO-MESA4';
-let carrinho=[]; let restData={};
+document.getElementById('debug').textContent = 'SID: ' + sid;
+
+let carrinho = [];
+let restData = { restaurante: 'Pizzaria Teixeira Demo', numero: '4', whats: '73999999999' };
+
 async function load(){
-  const q = query(collection(db,'mesas_nfc'), where('shortId','==', sid));
-  let snap = await getDocs(q);
-  if(snap.empty){
-    restData={ restaurante:'Pizzaria Teixeira Demo', numero:'4', whats:'73999999999', pix:'' };
-    document.getElementById('restNome').textContent=restData.restaurante; document.getElementById('mesaNome').textContent='MESA '+restData.numero; document.getElementById('mesaNum').textContent=restData.numero;
-    renderMenu([{nome:'X-Bacon Artesanal', preco:32, categoria:'Lanches', desc:'Blend 180g'},{nome:'Batata com Cheddar 400g', preco:38, categoria:'Porções', desc:'Porção grande'},{nome:'Coca Lata', preco:6, categoria:'Bebidas'}]);
-    document.getElementById('loading').classList.add('hidden'); document.getElementById('card').classList.remove('hidden'); return;
+  try{
+    const q = query(collection(db,'mesas_nfc'), where('shortId','==', sid));
+    const snap = await getDocs(q);
+    if(!snap.empty){
+      const mesa = snap.docs[0].data();
+      restData = mesa;
+      document.getElementById('restNome').textContent = mesa.restaurante;
+      document.getElementById('mesaNome').textContent = 'MESA ' + mesa.numero;
+      document.getElementById('mesaNum').textContent = mesa.numero;
+      const q2 = query(collection(db,'cardapio_nfc'), where('restauranteId','==', mesa.restauranteId || mesa.restaurante));
+      const snap2 = await getDocs(q2);
+      let cardapio = [];
+      snap2.forEach(d => cardapio.push(d.data()));
+      if(cardapio.length === 0) cardapio = [{nome:'X-Tudo Completo', preco:28, categoria:'Lanches', desc:'Pão, blend, queijo'}];
+      renderMenu(cardapio);
+    } else {
+      document.getElementById('restNome').textContent = restData.restaurante;
+      document.getElementById('mesaNome').textContent = 'MESA ' + restData.numero;
+      document.getElementById('mesaNum').textContent = restData.numero;
+      renderMenu([{nome:'X-Bacon Artesanal', preco:32, categoria:'Lanches', desc:'Blend 180g + bacon'},{nome:'Batata com Cheddar 400g', preco:38, categoria:'Porções', desc:'Porção grande'},{nome:'Coca Lata Gelada', preco:6, categoria:'Bebidas', desc:'350ml'}]);
+    }
+    document.getElementById('loading').classList.add('hidden');
+    document.getElementById('card').classList.remove('hidden');
+  } catch(e){
+    document.getElementById('debug').textContent = 'Erro: ' + e.message;
   }
-  const mesa = snap.docs[0].data(); restData=mesa;
-  document.getElementById('restNome').textContent=mesa.restaurante; document.getElementById('mesaNome').textContent='MESA '+mesa.numero; document.getElementById('mesaNum').textContent=mesa.numero;
-  const q2 = query(collection(db,'cardapio_nfc'), where('restauranteId','==', mesa.restauranteId||mesa.restaurante));
-  const snap2 = await getDocs(q2); let cardapio=[]; snap2.forEach(d=> cardapio.push(d.data()));
-  if(cardapio.length===0) cardapio=[{nome:'X-Tudo', preco:28, categoria:'Lanches'}];
-  renderMenu(cardapio);
-  document.getElementById('loading').classList.add('hidden'); document.getElementById('card').classList.remove('hidden');
 }
+
 function renderMenu(cardapio){
-  const cats=[...new Set(cardapio.map(i=>i.categoria||'Geral'))];
-  document.getElementById('categorias').innerHTML=cats.map(c=>`<button class="bg-white/10 px-4 py-2 rounded-full text-xs whitespace-nowrap">${c}</button>`).join('');
-  document.getElementById('menu').innerHTML=cardapio.map(item=>`<div class="bg-[#161616] border border-white/10 rounded-2xl p-4 flex gap-3"><img src="${item.foto||'https://images.unsplash.com/photo-1568909344668-6f14a07b56a0?q=80&w=100'}" class="w-16 h-16 rounded-xl object-cover"><div class="flex-1"><p class="font-black">${item.nome}</p><p class="text-xs text-gray-400">${item.desc||''}</p><p class="text-yellow-400 font-black mt-1">R$ ${Number(item.preco).toFixed(2)}</p></div><button onclick="addItem('${item.nome.replace(/'/g,'')}',${item.preco})" class="bg-white text-black h-10 px-4 rounded-full font-black text-sm self-center">+ Add</button></div>`).join('');
+  const cats = [...new Set(cardapio.map(i => i.categoria || 'Geral'))];
+  document.getElementById('categorias').innerHTML = cats.map(c => `<span class="bg-white/10 px-4 py-2 rounded-full text-xs whitespace-nowrap">${c}</span>`).join('');
+  document.getElementById('menu').innerHTML = cardapio.map(item => `
+    <div class="bg-[#161616] border border-white/10 rounded-2xl p-4 flex gap-3">
+      <img src="${item.foto || 'https://images.unsplash.com/photo-1568909344668-6f14a07b56a0?q=80&w=100'}" class="w-16 h-16 rounded-xl object-cover">
+      <div class="flex-1">
+        <p class="font-black text-sm">${item.nome}</p>
+        <p class="text-[11px] text-gray-400">${item.desc || ''}</p>
+        <p class="text-yellow-400 font-black mt-1 text-sm">R$ ${Number(item.preco).toFixed(2)}</p>
+      </div>
+      <button onclick="addItem('${item.nome.replace(/'/g,'')}',${Number(item.preco)})" class="bg-white text-black h-10 px-4 rounded-full font-black text-sm self-center">+ Add</button>
+    </div>`).join('');
 }
-window.addItem=(nome, preco)=>{ carrinho.push({nome, preco}); updateTotal(); }
-function updateTotal(){ const total=carrinho.reduce((s,i)=>s+i.preco,0); document.getElementById('total').textContent='R$ '+total.toFixed(2); document.getElementById('totalModal').textContent='Total: R$ '+total.toFixed(2); document.getElementById('qtd').textContent=carrinho.length; document.getElementById('carrinho').innerHTML=carrinho.map(i=>`<div class="flex justify-between bg-black/50 p-3 rounded-xl text-sm"><span>${i.nome}</span><span>R$ ${i.preco.toFixed(2)}</span></div>`).join('')||'<p class="text-gray-500 text-sm">Nenhum item</p>'; }
-document.getElementById('btnVer').addEventListener('click',()=>{ document.getElementById('modal').classList.remove('hidden'); });
-window.fechar=()=> document.getElementById('modal').classList.add('hidden');
-document.getElementById('btnEnviar').addEventListener('click', async()=>{
-  if(carrinho.length===0){alert('Adicione itens');return;}
-  const total=carrinho.reduce((s,i)=>s+i.preco,0); const obs=document.getElementById('obs').value;
-  const texto=`🍔 PEDIDO MESA ${restData.numero} - ${restData.restaurante}%0A${carrinho.map(i=>`• ${i.nome} - R$ ${i.preco}`).join('%0A')}%0AObs: ${obs}%0ATotal: R$ ${total.toFixed(2)}%0A%0AVia Garçom NFC`;
-  await addDoc(collection(db,'pedidos_nfc'),{ shortId:sid, mesa:restData.numero, restaurante:restData.restaurante, itens:carrinho, total, obs, data:serverTimestamp(), status:'novo' });
-  window.open('https://wa.me/55'+(restData.whats||'73999999999').replace(/\D/g,'')+'?text='+texto,'_blank');
-  carrinho=[]; updateTotal(); fechar(); alert('Pedido enviado!');
+
+window.addItem = (nome, preco) => { carrinho.push({nome, preco}); updateTotal(); };
+
+function updateTotal(){
+  const total = carrinho.reduce((s,i)=>s+i.preco,0);
+  document.getElementById('total').textContent = 'R$ ' + total.toFixed(2);
+  document.getElementById('totalModal').textContent = 'Total: R$ ' + total.toFixed(2);
+  document.getElementById('qtd').textContent = carrinho.length;
+  document.getElementById('carrinho').innerHTML = carrinho.map(i => `<div class="flex justify-between bg-black/50 p-3 rounded-xl text-sm"><span>${i.nome}</span><span>R$ ${i.preco.toFixed(2)}</span></div>`).join('') || '<p class="text-gray-500 text-sm">Nenhum item ainda</p>';
+}
+
+document.getElementById('btnVer').addEventListener('click', () => { document.getElementById('modal').classList.remove('hidden'); });
+window.fechar = () => document.getElementById('modal').classList.add('hidden');
+
+document.getElementById('btnEnviar').addEventListener('click', async () => {
+  if(carrinho.length === 0){ alert('Adicione itens ao pedido'); return; }
+  const total = carrinho.reduce((s,i)=>s+i.preco,0);
+  const obs = document.getElementById('obs').value;
+  const texto = `🍔 PEDIDO MESA ${restData.numero} - ${restData.restaurante}%0A${carrinho.map(i=>`• ${i.nome} - R$ ${i.preco}`).join('%0A')}%0AObs: ${obs}%0ATotal: R$ ${total.toFixed(2)}%0A%0AVia Meu Cardapio NFC`;
+  try{ await addDoc(collection(db,'pedidos_nfc'),{ shortId:sid, mesa:restData.numero, restaurante:restData.restaurante, itens:carrinho, total, obs, data:serverTimestamp(), status:'novo' }); } catch(e){}
+  const whats = (restData.whats || '73999999999').replace(/\D/g,'');
+  window.open('https://wa.me/55'+whats+'?text='+texto,'_blank');
+  carrinho = []; updateTotal(); fechar();
 });
-window.chamarGarcom=async()=>{ await addDoc(collection(db,'pedidos_nfc'),{ shortId:sid, mesa:restData.numero, restaurante:restData.restaurante, tipo:'chamar_garcom', data:serverTimestamp()}); alert('Garçom chamado! Mesa '+restData.numero); }
+
+window.chamarGarcom = async () => {
+  try{ await addDoc(collection(db,'pedidos_nfc'),{ shortId:sid, mesa:restData.numero, restaurante:restData.restaurante, tipo:'chamar_garcom', data:serverTimestamp() }); } catch(e){}
+  alert('Garçom chamado! Mesa ' + restData.numero);
+};
+
 load();
 </script>
-</body></html>
+</body>
+</html>
