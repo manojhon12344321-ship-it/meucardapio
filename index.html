@@ -1,39 +1,51 @@
 <!DOCTYPE html>
 <html lang="pt-BR">
 <head>
-<meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Garçom NFC - Cliente Encosta e Pede Sozinho</title>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Meu Cardápio - Garçom NFC | Teixeira de Freitas</title>
 <script src="https://cdn.tailwindcss.com"></script>
-<style>@import url('https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@700;900&display=swap');.sg{font-family:'Space Grotesk'} </style>
+<link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@700;900&display=swap" rel="stylesheet">
+<style>body{font-family:'Space Grotesk',sans-serif}</style>
 </head>
-<body class="bg-[#080808] text-white">
-<header class="flex justify-between p-5 max-w-6xl mx-auto"><div class="flex gap-2 items-center"><span class="text-2xl">🍔</span><b class="sg">Garçom NFC</b></div><a href="painel/" class="bg-white/10 px-4 py-2 rounded-full text-xs font-black">Entrar no Painel</a></header>
-<section class="max-w-6xl mx-auto px-5 py-10 grid md:grid-cols-2 gap-10 items-center">
-<div>
-<div class="bg-yellow-400 text-black inline-block px-3 py-1 rounded-full text-xs font-black">NOVO EM TEIXEIRA DE FREITAS</div>
-<h1 class="sg text-5xl md:text-7xl font-black leading-[0.85] mt-4">CLIENTE<br>ENCOSTA,<br><span class="text-yellow-400">PEDE SOZINHO.</span></h1>
-<p class="text-gray-400 mt-6 text-lg">Tag NFC na mesa. Cliente aproxima o celular. Cardápio abre na hora. Pedido vai direto no Whats da cozinha. Sem app. Sem QR borrado.</p>
-<div class="flex gap-3 mt-8 flex-wrap"><a href="#preco" class="bg-yellow-400 text-black px-8 py-4 rounded-full font-black">QUERO NO MEU RESTAURANTE</a><a href="m/?sid=DEMO-MESA4" class="bg-white/10 px-8 py-4 rounded-full font-black">Ver Demo ao Vivo</a></div>
-<p class="text-xs text-gray-500 mt-4">✓ Economiza 1 garçom por turno ✓ Gira mesa 30% mais rápido ✓ Cliente paga Pix na mesa</p>
-</div>
-<div class="bg-[#161616] border border-white/10 rounded-[32px] p-4">
-<div class="bg-black rounded-[24px] p-4">
-<p class="text-[10px] text-gray-500">MESA 4 - PIZZARIA TEIXEIRA</p>
-<div class="mt-3 space-y-2 text-sm">
-<p>1. 📱 Encosta celular na tag da mesa</p>
-<p>2. 🍔 Cardápio abre sem baixar nada</p>
-<p>3. ✅ +Add no X-Tudo e manda no Whats</p>
-<p>4. 🔔 Chama garçom com 1 clique</p>
-<p>5. 💳 Paga Pix direto</p>
-</div>
-<div class="mt-6 bg-yellow-400 text-black p-3 rounded-xl text-center font-black text-sm">DEMO: ESCANEIE A TAG NFC DA MESA</div>
-</div>
-</div>
+<body class="bg-[#080808] text-white antialiased">
+
+<header class="flex justify-between items-center p-5 max-w-6xl mx-auto">
+  <div class="flex gap-2 items-center"><span class="text-2xl">🍔</span><b>Meu Cardápio</b><span class="text-xs bg-white/10 px-2 py-1 rounded-full ml-2">NFC</span></div>
+  <a href="painel/" class="bg-white/10 hover:bg-white/20 px-5 py-2 rounded-full text-xs font-black">Painel do Dono</a>
+</header>
+
+<section class="max-w-6xl mx-auto px-5 py-10 md:py-20 grid md:grid-cols-2 gap-10 items-center">
+  <div>
+    <span class="bg-yellow-400 text-black px-3 py-1 rounded-full text-[11px] font-black">NOVO EM TEIXEIRA DE FREITAS - BA</span>
+    <h1 class="text-5xl md:text-7xl font-black leading-[0.85] mt-5">CLIENTE<br>ENCOSTA,<br><span class="text-yellow-400">PEDE SOZINHO.</span></h1>
+    <p class="text-gray-400 mt-6 text-lg leading-6">Tag NFC na mesa. Cliente aproxima o celular. Cardápio abre na hora. Pedido vai direto no WhatsApp da cozinha. Sem baixar app.</p>
+    <div class="flex flex-wrap gap-3 mt-8">
+      <a href="#preco" class="bg-yellow-400 text-black px-8 py-4 rounded-full font-black text-sm">QUERO NO MEU RESTAURANTE</a>
+      <a href="m/?sid=DEMO-MESA4" class="bg-white/10 px-8 py-4 rounded-full font-black text-sm">Ver Demo Ao Vivo</a>
+    </div>
+    <p class="text-[11px] text-gray-500 mt-4">✓ Economiza 1 garçom ✓ Gira mesa 30% mais rápido ✓ Cliente paga Pix na mesa</p>
+  </div>
+  <div class="bg-[#161616] border border-white/10 rounded-[32px] p-3">
+    <div class="bg-black rounded-[24px] p-5">
+      <p class="text-[10px] text-gray-500 tracking-widest">COMO FUNCIONA NA MESA 4</p>
+      <div class="mt-4 space-y-3 text-sm">
+        <div class="flex gap-3"><span>📱</span><span>Cliente encosta celular na tag NFC da mesa</span></div>
+        <div class="flex gap-3"><span>🍔</span><span>Cardápio abre instantâneo, sem app</span></div>
+        <div class="flex gap-3"><span>✅</span><span>Clica em +Add e envia no Whats da cozinha</span></div>
+        <div class="flex gap-3"><span>🔔</span><span>Chama garçom com 1 toque</span></div>
+        <div class="flex gap-3"><span>💳</span><span>Paga Pix direto na mesa</span></div>
+      </div>
+      <div class="mt-6 bg-yellow-400 text-black p-3 rounded-xl text-center font-black text-xs">TESTE AGORA: /m/?sid=DEMO-MESA4</div>
+    </div>
+  </div>
 </section>
-<section id="preco" class="max-w-6xl mx-auto px-5 py-16 grid md:grid-cols-3 gap-6">
-<div class="bg-white text-black rounded-[32px] p-8"><h3 class="sg font-black text-2xl">Kit 10 Mesas</h3><p class="text-4xl font-black mt-4">R$297</p><p class="text-sm text-gray-500">+ R$97/mês</p><ul class="mt-6 space-y-2 text-sm"><li>✓ 10 Tags NFC à prova d'água</li><li>✓ 10 QR Codes + Suporte mesa</li><li>✓ Cardápio digital com fotos</li><li>✓ Pedidos ao vivo no painel</li><li>✓ Botão Chamar Garçom</li></ul><a href="https://wa.me/5573999999999?text=Quero%20Garçom%20NFC%2010%20mesas" class="block mt-8 bg-black text-white py-4 rounded-full text-center font-black">Contratar Agora</a></div>
-<div class="bg-yellow-400 text-black rounded-[32px] p-8 border-4 border-white scale-105"><div class="bg-black text-yellow-400 inline-block px-3 py-1 rounded-full text-[10px] font-black">MAIS VENDIDO</div><h3 class="sg font-black text-2xl mt-3">Kit 20 Mesas</h3><p class="text-4xl font-black mt-4">R$497</p><p class="text-sm">+ R$97/mês</p><ul class="mt-6 space-y-2 text-sm font-bold"><li>✓ 20 Tags NFC</li><li>✓ Cardápio com fotos e categorias</li><li>✓ Pix na mesa</li><li>✓ Relatório vendas diário</li><li>✓ Suporte Whats prioritário</li></ul><a href="https://wa.me/5573999999999?text=Quero%20Garçom%20NFC%2020%20mesas" class="block mt-8 bg-black text-white py-4 rounded-full text-center font-black">Contratar Agora</a></div>
-<div class="bg-[#161616] border border-white/10 rounded-[32px] p-8"><h3 class="sg font-black text-2xl">Rede / Franquia</h3><p class="text-4xl font-black mt-4">R$997</p><p class="text-sm text-gray-400">+ R$197/mês</p><ul class="mt-6 space-y-2 text-sm text-gray-300"><li>✓ 50 Tags NFC</li><li>✓ 3 unidades / filiais</li><li>✓ Dashboard central</li><li>✓ Domínio próprio</li><li>✓ Treinamento equipe</li></ul><a href="https://wa.me/5573999999999?text=Quero%20Garçom%20NFC%20Rede" class="block mt-8 bg-white text-black py-4 rounded-full text-center font-black">Falar com Consultor</a></div>
+
+<section id="preco" class="max-w-6xl mx-auto px-5 pb-20 grid md:grid-cols-3 gap-6">
+  <div class="bg-white text-black rounded-[32px] p-8"><h3 class="font-black text-2xl">Kit 10 Mesas</h3><p class="text-4xl font-black mt-4">R$297</p><p class="text-sm text-gray-500">+ R$97/mês</p><ul class="mt-6 space-y-2 text-sm"><li>✓ 10 Tags NFC à prova d'água</li><li>✓ QR Code de backup</li><li>✓ Cardápio com fotos</li><li>✓ Pedidos ao vivo</li></ul><a href="https://wa.me/5573999999999?text=Quero%20Meu%20Cardapio%2010%20mesas" class="block mt-8 bg-black text-white py-4 rounded-full text-center font-black text-sm">Contratar</a></div>
+  <div class="bg-yellow-400 text-black rounded-[32px] p-8 border-4 border-white scale-105"><span class="bg-black text-yellow-400 px-3 py-1 rounded-full text-[10px] font-black">MAIS VENDIDO</span><h3 class="font-black text-2xl mt-3">Kit 20 Mesas</h3><p class="text-4xl font-black mt-4">R$497</p><p class="text-sm">+ R$97/mês</p><ul class="mt-6 space-y-2 text-sm font-black"><li>✓ 20 Tags NFC</li><li>✓ Botão Chamar Garçom</li><li>✓ Pix na mesa</li><li>✓ Relatório vendas</li></ul><a href="https://wa.me/5573999999999?text=Quero%20Meu%20Cardapio%2020%20mesas" class="block mt-8 bg-black text-white py-4 rounded-full text-center font-black text-sm">Contratar Agora</a></div>
+  <div class="bg-[#161616] border border-white/10 rounded-[32px] p-8"><h3 class="font-black text-2xl">Rede</h3><p class="text-4xl font-black mt-4">R$997</p><p class="text-sm text-gray-400">+ R$197/mês</p><ul class="mt-6 space-y-2 text-sm text-gray-300"><li>✓ 50 Tags NFC</li><li>✓ 3 unidades</li><li>✓ Dashboard central</li><li>✓ Domínio próprio</li></ul><a href="https://wa.me/5573999999999?text=Quero%20Rede" class="block mt-8 bg-white text-black py-4 rounded-full text-center font-black text-sm">Falar com Consultor</a></div>
 </section>
-<footer class="text-center p-10 text-xs text-gray-600">Garçom NFC • Teixeira de Freitas - BA • Encostou, pediu.</footer>
-</body></html>
+<footer class="text-center p-10 text-[10px] text-gray-600">Meu Cardápio NFC • Teixeira de Freitas - BA • Encostou, pediu.</footer>
+</body>
+</html>
