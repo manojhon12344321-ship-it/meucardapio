@@ -1,42 +1,50 @@
-<!DOCTYPE html><html lang="pt"><head><meta charset="UTF-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>Burger</title><script src="https://cdn.tailwindcss.com"></script></head><body class="bg-black text-white">
+<!DOCTYPE html><html lang="pt-BR"><head><meta charset="UTF-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>Burger</title><script src="https://cdn.tailwindcss.com"></script></head><body class="bg-black text-white">
 <div class="max-w-sm mx-auto p-4 pb-28">
-<div id="barMesa" class="hidden bg-yellow-400 text-black p-3 rounded-xl font-black text-center">🪑 MESA <span id="nMesa"></span> - Pedido na mesa</div>
-<h1 class="font-black text-2xl mt-3">MEU BURGER</h1><p class="text-xs text-zinc-500">Toque no + para adicionar</p>
-<div id="menu" class="mt-4 space-y-3"></div>
+<div id="barMesa" class="hidden bg-yellow-400 text-black p-3 rounded-xl font-black text-center">🪑 MESA <span id="nMesa"></span></div>
+<h1 class="font-black text-2xl mt-2">BURGER</h1>
+<div id="menu" class="mt-4 space-y-2"></div>
 </div>
-<div class="fixed bottom-0 left-0 right-0 max-w-sm mx-auto bg-zinc-900 p-4 flex justify-between items-center border-t border-zinc-800">
-<span id="tot" class="font-black">R$ 0,00</span><button id="btnSac" class="bg-yellow-400 text-black px-6 py-2 rounded-full font-black">Sacola</button>
-</div>
-<!-- MODAL PRODUTO -->
+<div class="fixed bottom-0 left-0 right-0 max-w-sm mx-auto bg-zinc-900 p-4 flex justify-between border-t border-zinc-800"><span id="tot" class="font-black">R$ 0,00</span><button id="btnVer" class="bg-yellow-400 text-black px-6 py-2 rounded-full font-black">Sacola</button></div>
+<!-- PRODUTO MODAL -->
 <div id="modProd" class="hidden fixed inset-0 bg-black/90 z-50 p-4 flex items-end"><div class="bg-zinc-800 w-full rounded-2xl p-5 max-h-[85vh] overflow-auto">
-<h3 id="pNome" class="font-black text-lg"></h3><p id="pDesc" class="text-xs text-zinc-400"></p>
-<div id="pAds" class="mt-3 space-y-2"></div>
-<textarea id="pObs" placeholder="Obs: sem cebola, ponto da carne..." class="w-full mt-3 bg-black p-3 rounded-xl border border-zinc-700 text-sm"></textarea>
-<div class="flex justify-between items-center mt-4"><span id="pPreco" class="font-black text-yellow-400"></span><button id="pAdd" class="bg-yellow-400 text-black px-6 py-2 rounded-full font-black">Adicionar</button></div>
-<button onclick="document.getElementById('modProd').classList.add('hidden')" class="w-full mt-2 text-xs text-zinc-500">Fechar</button>
+<h3 id="pNome" class="font-black"></h3><p id="pDesc" class="text-xs text-zinc-400"></p><div id="pAds" class="mt-3 space-y-2"></div>
+<textarea id="pObs" placeholder="Obs desse lanche: sem cebola..." class="w-full mt-3 bg-black p-3 rounded-xl border border-zinc-700 text-sm"></textarea>
+<div class="flex justify-between items-center mt-4"><span id="pPreco" class="font-black text-yellow-400"></span><button id="pAddBtn" class="bg-yellow-400 text-black px-6 py-2 rounded-full font-black">Adicionar</button></div>
+<button onclick="document.getElementById('modProd').classList.add('hidden')" class="w-full mt-2 text-xs">Fechar</button>
 </div></div>
-<!-- MODAL SACOLA -->
+<!-- SACOLA MODAL -->
 <div id="modSac" class="hidden fixed inset-0 bg-black/90 z-50 p-4 flex items-end"><div class="bg-zinc-800 w-full rounded-2xl p-5 max-h-[85vh] overflow-auto">
 <h3 class="font-black">Sacola <span id="sMesa" class="text-yellow-400"></span></h3><div id="sLista" class="mt-3 space-y-2 text-sm"></div>
-<input id="sNome" placeholder="Seu nome" class="w-full mt-4 bg-black p-3 rounded-xl border border-zinc-700">
+<input id="sNome" placeholder="Seu nome" class="w-full mt-3 bg-black p-3 rounded-xl border border-zinc-700">
 <input id="sLocal" placeholder="Mesa ou Endereço" class="w-full mt-2 bg-black p-3 rounded-xl border border-zinc-700">
-<button onclick="confirmar()" class="w-full mt-3 bg-yellow-400 text-black py-3 rounded-xl font-black">CONFIRMAR</button>
-<button onclick="document.getElementById('modSac').classList.add('hidden')" class="w-full mt-2 text-xs">Continuar</button>
+<textarea id="sObsGeral" placeholder="Obs geral do pedido (opcional)" class="w-full mt-2 bg-black p-3 rounded-xl border border-zinc-700 text-sm"></textarea>
+<button onclick="enviarPedido()" class="w-full mt-3 bg-yellow-400 text-black py-3 rounded-xl font-black">CONFIRMAR</button>
+<button onclick="document.getElementById('modSac').classList.add('hidden')" class="w-full mt-2 text-xs">Fechar</button>
 </div></div>
-<div id="modOk" class="hidden fixed inset-0 bg-black z-50 p-6 text-center pt-16"><h2 class="text-3xl font-black">✅ Enviado!</h2><p class="mt-2">MESA <span id="okM"></span></p><p id="okId" class="font-mono text-yellow-400 mt-2"></p><div id="okStatus" class="mt-6 bg-zinc-900 p-4 rounded-xl"><p class="text-xs text-zinc-400">Status</p><p id="okSt" class="font-black">NOVO</p><p id="okTempo" class="text-sm"></p></div><button onclick="location.reload()" class="mt-8 bg-white text-black px-8 py-3 rounded-full font-black">Novo Pedido</button></div>
+<div id="modOk" class="hidden fixed inset-0 bg-black z-50 p-6 text-center pt-16"><h2 class="text-3xl font-black">✅ ENVIADO</h2><p id="okMesaTxt" class="mt-2"></p><p id="okId" class="font-mono text-yellow-400 mt-2"></p><div class="mt-6 bg-zinc-900 p-4 rounded-xl"><p id="okStatus" class="font-black">NOVO</p><p id="okTempo" class="text-sm text-zinc-400"></p></div><button onclick="location.reload()" class="mt-8 bg-white text-black px-8 py-3 rounded-full font-black">Novo</button></div>
 <script type="module">
 import{initializeApp}from"https://www.gstatic.com/firebasejs/10.12.2/firebase-app.js";import{getFirestore,collection,onSnapshot,addDoc,doc,setDoc,serverTimestamp}from"https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js";
 const cfg={apiKey:"AIzaSyBBnA9orBCf3j1_3nRHWcIctLe7aKMgcI8",authDomain:"mapapet-ad359.firebaseapp.com",projectId:"mapapet-ad359",storageBucket:"mapapet-ad359.firebasestorage.app",messagingSenderId:"268931015194",appId:"1:268931015194:web:5ae634751c3be46ebe67a3"};
 const db=getFirestore(initializeApp(cfg));
 const mesaParam=new URLSearchParams(location.search).get('mesa');
-if(mesaParam){document.getElementById('barMesa').classList.remove('hidden');document.getElementById('nMesa').textContent=mesaParam;document.getElementById('sMesa').textContent='MESA '+mesaParam;document.getElementById('okM').textContent=mesaParam;document.getElementById('sLocal').value='Mesa '+mesaParam;document.getElementById('sLocal').readOnly=true;}
+if(mesaParam){document.getElementById('barMesa').classList.remove('hidden');document.getElementById('nMesa').textContent=mesaParam;document.getElementById('sMesa').textContent='- MESA '+mesaParam;document.getElementById('okMesaTxt').textContent='MESA '+mesaParam;document.getElementById('sLocal').value='Mesa '+mesaParam;}
 let car=[];let menu=[];let sel=null;let selAds=[];
-onSnapshot(collection(db,'cardapio'),s=>{menu=[];s.forEach(d=>menu.push({id:d.id,...d.data()}));if(!menu.length)menu=[{nome:"X-Burguer",preco:28,desc:"Pão, carne, queijo",adicionais:[{nome:"Bacon extra",preco:4},{nome:"Cheddar extra",preco:5}],ativo:true},{nome:"X-Bacon",preco:38,desc:"Com bacon",adicionais:[{nome:"Ovo",preco:3}],ativo:true}];document.getElementById('menu').innerHTML=menu.filter(m=>m.ativo!==false).map(m=>`<div class="bg-zinc-900 p-4 rounded-xl flex justify-between"><div><b>${m.nome}</b><br><span class="text-xs text-zinc-400">${m.desc||''}</span><br><b class="text-yellow-400">R$ ${m.preco}</b></div><button onclick="abrirProd('${m.id}')" class="bg-white text-black w-10 h-10 rounded-full font-black">+</button></div>`).join('');});
-window.abrirProd=(id)=>{sel=menu.find(m=>m.id==id);selAds=[];document.getElementById('pNome').textContent=sel.nome;document.getElementById('pDesc').textContent=sel.desc||'';document.getElementById('pPreco').textContent='R$ '+sel.preco;document.getElementById('pObs').value='';document.getElementById('pAds').innerHTML=(sel.adicionais||[]).map((a,i)=>`<label class="flex justify-between bg-black p-2 rounded-xl text-sm"><span><input type="checkbox" onchange="toggleAd(${i})"> ${a.nome}</span><span class="text-yellow-400">+R$ ${a.preco}</span></label>`).join('');document.getElementById('modProd').classList.remove('hidden');};
-window.toggleAd=(i)=>{const ad=sel.adicionais[i];const idx=selAds.findIndex(x=>x.nome==ad.nome);if(idx>=0)selAds.splice(idx,1);else selAds.push(ad);calcProd();};
-function calcProd(){let t=sel.preco+selAds.reduce((s,a)=>s+a.preco,0);document.getElementById('pPreco').textContent='R$ '+t.toFixed(2);}
-document.getElementById('pAdd').onclick=()=>{const obs=document.getElementById('pObs').value;const total=sel.preco+selAds.reduce((s,a)=>s+a.preco,0);car.push({nome:sel.nome,preco:total,base:sel.preco,adicionais:selAds,obs});upd();document.getElementById('modProd').classList.add('hidden');};
-function upd(){const t=car.reduce((s,i)=>s+i.preco,0);document.getElementById('tot').textContent=`R$ ${t.toFixed(2)} - ${car.length} itens`;document.getElementById('sLista').innerHTML=car.map((c,i)=>`<div class="flex justify-between bg-black p-2 rounded-xl"><span>• ${c.nome} ${c.adicionais.length?'+'+c.adicionais.map(a=>a.nome).join(','):''} ${c.obs?'['+c.obs+']':''}<br><b class="text-yellow-400">R$ ${c.preco}</b></span><button onclick="car.splice(${i},1);upd()" class="text-red-500">X</button></div>`).join('');}
-document.getElementById('btnSac').onclick=()=>{if(!car.length)return alert('Sacola vazia');upd();document.getElementById('modSac').classList.remove('hidden');};
-window.confirmar=async()=>{const nome=document.getElementById('sNome').value.trim();let local=document.getElementById('sLocal').value.trim();if(mesaParam)local='Mesa '+mesaParam;if(!nome)return alert('Nome');if(!local)return alert('Local');const total=car.reduce((s,i)=>s+i.preco,0);const ref=await addDoc(collection(db,'pedidos'),{cliente:nome,local,mesa:mesaParam||null,itens:car,total,status:'novo',criadoEm:serverTimestamp(),tempoEstimado:null});if(mesaParam){await setDoc(doc(db,'comandas_mesas','MESA'+mesaParam),{numero:parseInt(mesaParam),cliente:nome,total,status:'ocupada',ultimoPedido:serverTimestamp()},{merge:true});}document.getElementById('modSac').classList.add('hidden');document.getElementById('modOk').classList.remove('hidden');document.getElementById('okId').textContent='#'+ref.id.slice(0,5).toUpperCase();onSnapshot(doc(db,'pedidos',ref.id),ds=>{if(!ds.exists())return;const p=ds.data();document.getElementById('okSt').textContent=p.status.toUpperCase();if(p.tempoEstimado)document.getElementById('okTempo').textContent='Faltam '+p.tempoEstimado+' min';});};
+onSnapshot(collection(db,'cardapio'),s=>{menu=[];s.forEach(d=>menu.push({id:d.id,...d.data()}));if(!menu.length)menu=[{nome:"X-Burguer",preco:28,desc:"Pão, carne, queijo",adicionais:[{nome:"Bacon",preco:4},{nome:"Cheddar",preco:5}],ativo:true},{nome:"X-Bacon",preco:38,desc:"Bacon crocante",adicionais:[{nome:"Ovo",preco:3}],ativo:true}];document.getElementById('menu').innerHTML=menu.filter(m=>m.ativo!==false).map(m=>`<div class="bg-zinc-900 p-4 rounded-xl flex justify-between"><div><b>${m.nome}</b><br><span class="text-xs text-zinc-400">${m.desc||''}</span><br><b class="text-yellow-400">R$ ${m.preco}</b></div><button onclick="abrir('${m.id}')" class="bg-white text-black w-10 h-10 rounded-full font-black">+</button></div>`).join('');});
+window.abrir=(id)=>{sel=menu.find(m=>m.id==id);selAds=[];document.getElementById('pNome').textContent=sel.nome;document.getElementById('pDesc').textContent=sel.desc||'';document.getElementById('pObs').value='';document.getElementById('pAds').innerHTML=(sel.adicionais||[]).map((a,i)=>`<label class="flex justify-between bg-black p-2 rounded-xl text-sm"><span><input type="checkbox" onchange="togAd(${i})"> ${a.nome}</span><span class="text-yellow-400">+R$ ${a.preco}</span></label>`).join('');calc();document.getElementById('modProd').classList.remove('hidden');};
+window.togAd=(i)=>{const ad=sel.adicionais[i];const idx=selAds.findIndex(x=>x.nome==ad.nome);if(idx>=0)selAds.splice(idx,1);else selAds.push(ad);calc();};
+function calc(){let t=sel.preco+selAds.reduce((s,a)=>s+a.preco,0);document.getElementById('pPreco').textContent='R$ '+t.toFixed(2);}
+document.getElementById('pAddBtn').onclick=()=>{const obs=document.getElementById('pObs').value;let t=sel.preco+selAds.reduce((s,a)=>s+a.preco,0);car.push({nome:sel.nome,preco:t,adicionais:[...selAds],obs});upd();document.getElementById('modProd').classList.add('hidden');};
+function upd(){let tot=car.reduce((s,i)=>s+i.preco,0);document.getElementById('tot').textContent='R$ '+tot.toFixed(2)+' - '+car.length+' itens';document.getElementById('sLista').innerHTML=car.map((c,i)=>`<div class="bg-black p-2 rounded-xl flex justify-between"><span>• ${c.nome} ${c.adicionais.length?'+'+c.adicionais.map(a=>a.nome).join(','):''} ${c.obs?'['+c.obs+']':''}<br><b class="text-yellow-400">R$ ${c.preco}</b></span><button onclick="car.splice(${i},1);upd()" class="text-red-500">X</button></div>`).join('');}
+document.getElementById('btnVer').onclick=()=>{if(!car.length)return alert('Vazia');upd();document.getElementById('modSac').classList.remove('hidden');};
+window.enviarPedido=async()=>{
+ try{
+  const nome=document.getElementById('sNome').value.trim();let local=document.getElementById('sLocal').value.trim();const obsGeral=document.getElementById('sObsGeral').value.trim();
+  if(mesaParam) local='Mesa '+mesaParam; if(!nome)return alert('Nome'); if(!local)return alert('Local');
+  const tot=car.reduce((s,i)=>s+i.preco,0);
+  const ref=await addDoc(collection(db,'pedidos'),{cliente:nome,local,mesa:mesaParam||null,itens:car,obsGeral,total:tot,status:'novo',criadoEm:serverTimestamp()});
+  if(mesaParam) await setDoc(doc(db,'comandas_mesas','MESA'+mesaParam),{numero:parseInt(mesaParam),cliente:nome,status:'ocupada',ultimoPedido:serverTimestamp()},{merge:true});
+  document.getElementById('modSac').classList.add('hidden');document.getElementById('modOk').classList.remove('hidden');document.getElementById('okId').textContent='#'+ref.id.slice(0,5).toUpperCase();
+  onSnapshot(doc(db,'pedidos',ref.id),d=>{if(!d.exists())return;const p=d.data();document.getElementById('okStatus').textContent=p.status.toUpperCase();if(p.tempoEstimado)document.getElementById('okTempo').textContent=p.atrasado?'ATRASADO!':(p.tempoRestante||p.tempoEstimado+' min');});
+ }catch(e){alert('Erro: '+e.message);}
+};
 </script></body></html>
