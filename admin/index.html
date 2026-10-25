@@ -1,58 +1,57 @@
-<!DOCTYPE html><html><head><meta charset="UTF-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>ADMIN COMPLETO</title><script src="https://cdn.tailwindcss.com"></script></head><body class="bg-black text-white p-3">
+<!DOCTYPE html><html><head><meta charset="UTF-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>ADMIN</title><script src="https://cdn.tailwindcss.com"></script></head><body class="bg-black text-white p-3">
 <div class="max-w-6xl mx-auto">
-<h1 class="font-black">ADMIN COMPLETO <button id="beepBtn" onclick="ativarBeep()" class="ml-2 bg-red-600 px-2 py-1 rounded-full text-xs">🔔 ATIVAR BEEP</button> <span id="qtd" class="bg-yellow-400 text-black px-2 rounded-full text-xs">0</span></h1>
+<h1 class="font-black">ADMIN <button id="beepBtn" onclick="ativarBeep()" class="ml-2 bg-red-600 px-2 py-1 rounded-full text-xs">🔔 ATIVAR BEEP</button> <span id="qtd" class="bg-yellow-400 text-black px-2 rounded-full text-xs">0</span></h1>
 <div class="mt-3 flex gap-2 flex-wrap text-xs">
 <button onclick="ver('pedidos')" class="bg-yellow-400 text-black px-3 py-2 rounded-full font-black">📦 PEDIDOS</button>
 <button onclick="ver('kds')" class="bg-zinc-800 px-3 py-2 rounded-full">🧑‍🍳 KDS</button>
-<button onclick="ver('mesas')" class="bg-zinc-800 px-3 py-2 rounded-full">🪑 MESAS+LINK+NFC</button>
+<button onclick="ver('mesas')" class="bg-zinc-800 px-3 py-2 rounded-full">🪑 MESAS+LINK</button>
 <button onclick="ver('cardapio')" class="bg-zinc-800 px-3 py-2 rounded-full">🍔 CARDÁPIO</button>
-<button onclick="ver('caixa')" class="bg-zinc-800 px-3 py-2 rounded-full">💰 CAIXA</button>
 </div>
 <div id="pedidos" class="mt-4 space-y-2"></div>
 <div id="kds" class="hidden mt-4 grid grid-cols-1 md:grid-cols-3 gap-2"></div>
 <div id="mesas" class="hidden mt-4"></div>
 <div id="cardapio" class="hidden mt-4"></div>
-<div id="caixa" class="hidden mt-4"></div>
 </div>
 <script type="module">
 import{initializeApp}from"https://www.gstatic.com/firebasejs/10.12.2/firebase-app.js";import{getFirestore,collection,onSnapshot,doc,updateDoc,deleteDoc,setDoc,addDoc}from"https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js";
 const cfg={apiKey:"AIzaSyBBnA9orBCf3j1_3nRHWcIctLe7aKMgcI8",authDomain:"mapapet-ad359.firebaseapp.com",projectId:"mapapet-ad359",storageBucket:"mapapet-ad359.firebasestorage.app",messagingSenderId:"268931015194",appId:"1:268931015194:web:5ae634751c3be46ebe67a3"};
 const db=getFirestore(initializeApp(cfg));
-let beepOn=false;let audio=new Audio('https://actions.google.com/sounds/v1/alarms/beep_short.ogg');
-window.ativarBeep=()=>{beepOn=true;document.getElementById('beepBtn').textContent='🔔 BEEP ON';document.getElementById('beepBtn').classList.replace('bg-red-600','bg-green-600');audio.play().catch(()=>{});};
-window.ver=(t)=>{['pedidos','kds','mesas','cardapio','caixa'].forEach(x=>document.getElementById(x).classList.add('hidden'));document.getElementById(t).classList.remove('hidden');}
-let ultimoCount=0;
+let beepOn=false;let audio=new Audio('https://actions.google.com/sounds/v1/alarms/beep_short.ogg');let lastCount=0;
+window.ativarBeep=()=>{beepOn=true;document.getElementById('beepBtn').textContent='🔔 BEEP ON';document.getElementById('beepBtn').className='ml-2 bg-green-600 px-2 py-1 rounded-full text-xs';audio.play().catch(()=>{});};
+window.ver=(t)=>{['pedidos','kds','mesas','cardapio'].forEach(x=>document.getElementById(x).classList.add('hidden'));document.getElementById(t).classList.remove('hidden');};
 onSnapshot(collection(db,'pedidos'),s=>{
- let h='';let k='';let count=0;
- s.forEach(d=>{const p=d.data();count++;const itens=(p.itens||[]).map(i=>`• ${i.nome} ${i.adicionais?'+'+i.adicionais.map(a=>a.nome).join(','):''} ${i.obs?'['+i.obs+']':''} (R$ ${i.preco})`).join('<br>');const tempo=p.tempoEstimado?`<span class="text-xs ${p.atrasado?'bg-red-600':'bg-zinc-700'} px-2 py-1 rounded-full">${p.atrasado?'ATRASADO!':p.tempoRestante||p.tempoEstimado+' min restantes'}</span>`:''; 
- h+=`<div class="bg-zinc-900 p-3 rounded-xl border-l-4 ${p.status=='novo'?'border-red-500':p.status=='preparo'?'border-yellow-400':'border-green-500'}"><div class="flex justify-between font-black text-sm"><span>${p.cliente} - ${p.local}</span><span>${p.status} ${tempo}</span></div><div class="text-xs mt-1 text-zinc-300">${itens}</div><div class="font-black text-yellow-400 mt-1">R$ ${p.total}</div><div class="mt-2 flex gap-1 flex-wrap"><button onclick="aceitar('${d.id}')" class="bg-yellow-400 text-black px-2 py-1 rounded-full text-[11px] font-black">Aceitar+Tempo</button><button onclick="st('${d.id}','pronto')" class="bg-green-600 px-2 py-1 rounded-full text-[11px]">Pronto</button><button onclick="imprimir('${d.id}')" class="bg-zinc-700 px-2 py-1 rounded-full text-[11px]">🖨️ 58mm</button><button onclick="delP('${d.id}')" class="bg-red-600 px-2 py-1 rounded-full text-[11px]">X</button></div></div>`;
- if(p.status!=='pronto')k+=`<div class="bg-zinc-900 p-3 rounded-xl"><b>${p.local} - ${p.cliente}</b><br><span class="text-xs">${itens}</span><br>${tempo}<br><button onclick="st('${d.id}','pronto')" class="mt-2 w-full bg-green-600 py-1 rounded-full text-xs">Marcar Pronto</button></div>`;
+ let html='';let kdsHtml='';let count=0;
+ s.forEach(d=>{
+  const p=d.data();count++;
+  const itensTxt=(p.itens||[]).map(i=>`• ${i.nome} ${i.adicionais&&i.adicionais.length?'+'+i.adicionais.map(a=>a.nome).join(','):''} ${i.obs?'['+i.obs+']':''} (R$ ${i.preco})`).join('<br>');
+  const tempo=p.tempoEstimado?`<span class="text-[11px] ${p.atrasado?'bg-red-600':'bg-zinc-700'} px-2 py-1 rounded-full ml-2">${p.atrasado?'ATRASADO!':p.tempoRestante||p.tempoEstimado+' min'}</span>`:'';
+  html+=`<div class="bg-zinc-900 p-3 rounded-xl border-l-4 ${p.status=='novo'?'border-red-500':p.status=='preparo'?'border-yellow-400':'border-green-500'}"><div class="flex justify-between font-black text-sm"><span>${p.cliente} - ${p.local}</span><span>${p.status}${tempo}</span></div><div class="text-xs mt-1 text-zinc-300">${itensTxt}<br><span class="text-zinc-500">${p.obsGeral||''}</span></div><div class="font-black text-yellow-400 mt-1">R$ ${p.total}</div><div class="mt-2 flex gap-1 flex-wrap"><button onclick="aceitar('${d.id}')" class="bg-yellow-400 text-black px-2 py-1 rounded-full text-[11px] font-black">Aceitar+Tempo</button><button onclick="st('${d.id}','pronto')" class="bg-green-600 px-2 py-1 rounded-full text-[11px]">Pronto</button><button onclick="imprimir('${d.id}')" class="bg-zinc-700 px-2 py-1 rounded-full text-[11px]">🖨️ 58mm</button><button onclick="delP('${d.id}')" class="bg-red-600 px-2 py-1 rounded-full text-[11px]">X</button></div></div>`;
+  if(p.status!='pronto') kdsHtml+=`<div class="bg-zinc-900 p-3 rounded-xl"><b>${p.local} - ${p.cliente}</b><br><span class="text-xs">${itensTxt}</span><br>${tempo}<br><button onclick="st('${d.id}','pronto')" class="mt-2 w-full bg-green-600 py-1 rounded-full text-xs">Pronto</button></div>`;
  });
- document.getElementById('pedidos').innerHTML=h||'Sem pedidos';document.getElementById('kds').innerHTML=k||'Nenhum em preparo';document.getElementById('qtd').textContent=count;
- if(beepOn && count>ultimoCount){audio.play();}ultimoCount=count;
+ document.getElementById('pedidos').innerHTML=html||'Sem pedidos - teste ?mesa=1';document.getElementById('kds').innerHTML=kdsHtml||'Nenhum em preparo';document.getElementById('qtd').textContent=count;
+ if(beepOn && count>lastCount) audio.play().catch(()=>{});lastCount=count;
 });
 onSnapshot(collection(db,'comandas_mesas'),s=>{
- let h=`<button onclick="gerar()" class="bg-white text-black px-3 py-1 rounded-full text-xs font-black mb-2">GERAR 1-20</button><div class="grid grid-cols-2 md:grid-cols-4 gap-2">`;
+ let html=`<button onclick="gerar()" class="bg-white text-black px-3 py-2 rounded-full text-xs font-black mb-2">GERAR MESAS 1-20</button><div class="grid grid-cols-2 md:grid-cols-4 gap-2">`;
  s.forEach(d=>{
   const m=d.data();const num=m.numero||d.id.replace('MESA','');const link=location.origin.replace('/admin','').replace('/admin/','')+'/?mesa='+num;
-  h+=`<div class="bg-zinc-900 p-3 rounded-xl ${m.status=='ocupada'?'border border-yellow-400':''}"><b class="text-yellow-400 text-sm">MESA ${num}</b><br><span class="text-xs">${m.cliente||'Livre'} R$ ${m.total||0}</span><br><button onclick="navigator.clipboard.writeText('${link}');alert('Copiado MESA ${num}')" class="mt-1 w-full bg-white text-black py-1 rounded-full text-xs font-black">🔗 LINK</button><button onclick="gravarNFC(${num})" class="mt-1 w-full bg-zinc-700 py-1 rounded-full text-xs">💳 NFC</button><a href="${link}" target="_blank" class="text-[9px] break-all text-zinc-500">${link}</a><div class="mt-1 flex gap-1"><button onclick="comanda('${d.id}')" class="bg-yellow-600 px-2 py-1 rounded text-[10px]">Comanda</button><button onclick="zerarM('${d.id}')" class="bg-red-900 px-2 py-1 rounded text-[10px]">Zerar</button></div></div>`;
+  html+=`<div class="bg-zinc-900 p-3 rounded-xl ${m.status=='ocupada'?'border border-yellow-400':''}"><b class="text-yellow-400 text-sm">MESA ${num}</b><br><span class="text-xs">${m.cliente||'Livre'}</span><br><button onclick="navigator.clipboard.writeText('${link}');alert('Link MESA ${num} copiado')" class="mt-1 w-full bg-white text-black py-1 rounded-full text-xs font-black">🔗 COPIAR LINK</button><button onclick="nfc(${num})" class="mt-1 w-full bg-zinc-700 py-1 rounded-full text-xs">💳 NFC</button><a href="${link}" target="_blank" class="text-[9px] break-all text-zinc-500">${link}</a><br><button onclick="zerarM('${d.id}')" class="mt-1 bg-red-900 px-2 py-1 rounded text-[10px]">Zerar</button></div>`;
  });
- h+=`</div>`;document.getElementById('mesas').innerHTML=h;
+ html+='</div>';document.getElementById('mesas').innerHTML=html;
 });
 onSnapshot(collection(db,'cardapio'),s=>{
- let h=`<div class="flex gap-2"><input id="nNome" placeholder="Nome" class="bg-zinc-800 p-2 rounded-xl text-xs"><input id="nPreco" type="number" placeholder="Preço" class="bg-zinc-800 p-2 rounded-xl text-xs w-20"><button onclick="addProd()" class="bg-yellow-400 text-black px-3 py-1 rounded-full text-xs font-black">Add</button></div><div class="mt-3 space-y-2">`;
- s.forEach(d=>{const p=d.data();h+=`<div class="bg-zinc-900 p-2 rounded-xl flex justify-between text-sm"><span>${p.nome} R$ ${p.preco} ${p.ativo===false?'(PAUSADO)':''}</span><span><button onclick="toggleP('${d.id}',${p.ativo!==false})" class="bg-zinc-700 px-2 py-1 rounded-full text-xs">${p.ativo===false?'Ativar':'Pausar'}</button> <button onclick="delCard('${d.id}')" class="bg-red-600 px-2 py-1 rounded-full text-xs">X</button></span></div>`;});
- h+=`</div>`;document.getElementById('cardapio').innerHTML=h;
+ let html=`<div class="flex gap-2"><input id="nNome" placeholder="Nome" class="bg-zinc-800 p-2 rounded-xl text-xs"><input id="nPreco" type="number" placeholder="Preço" class="bg-zinc-800 p-2 rounded-xl text-xs w-20"><button onclick="addProd()" class="bg-yellow-400 text-black px-3 py-1 rounded-full text-xs font-black">Add</button></div><div class="mt-3 space-y-2">`;
+ s.forEach(d=>{const p=d.data();html+=`<div class="bg-zinc-900 p-2 rounded-xl flex justify-between text-sm"><span>${p.nome} R$ ${p.preco} ${p.ativo===false?'(PAUSADO)':''}</span><span><button onclick="toggleP('${d.id}',${p.ativo!==false})" class="bg-zinc-700 px-2 py-1 rounded-full text-xs">${p.ativo===false?'Ativar':'Pausar'}</button> <button onclick="delC('${d.id}')" class="bg-red-600 px-2 py-1 rounded-full text-xs">X</button></span></div>`;});
+ html+='</div>';document.getElementById('cardapio').innerHTML=html;
 });
-window.aceitar=async(id)=>{const t=prompt('Tempo em minutos? Ex: 20');if(!t)return;await updateDoc(doc(db,'pedidos',id),{status:'preparo',tempoEstimado:parseInt(t),tempoRestante:t+' min restantes'});setTimeout(async()=>{await updateDoc(doc(db,'pedidos',id),{atrasado:true,tempoRestante:'ATRASADO!'});},parseInt(t)*60000);};
+window.aceitar=async(id)=>{const t=prompt('Tempo em minutos? 20');if(!t)return;await updateDoc(doc(db,'pedidos',id),{status:'preparo',tempoEstimado:parseInt(t),tempoRestante:t+' min restantes'});setTimeout(async()=>{await updateDoc(doc(db,'pedidos',id),{atrasado:true,tempoRestante:'ATRASADO!'});},parseInt(t)*60000);};
 window.st=async(id,s)=>{await updateDoc(doc(db,'pedidos',id),{status:s});};
 window.delP=async(id)=>{if(confirm('Apagar?'))await deleteDoc(doc(db,'pedidos',id));};
-window.gerar=async()=>{for(let i=1;i<=20;i++)await setDoc(doc(db,'comandas_mesas','MESA'+i),{numero:i,status:'livre',total:0},{merge:true});alert('Mesas 1-20 geradas');};
-window.zerarM=async(id)=>{if(confirm('Zerar mesa?'))await deleteDoc(doc(db,'comandas_mesas',id));};
-window.comanda=async(id)=>{const m=(await import("https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js").then(()=>{})),d=document.getElementById('mesas');const total=prompt('Desconto %? 0 para nenhum');const dividir=prompt('Dividir por quantas pessoas? 1 para não dividir');alert(`Comanda MESA ${id} - Desconto ${total}% - Dividir ${dividir}x - Imprimir 58mm`);window.print();};
+window.gerar=async()=>{for(let i=1;i<=20;i++)await setDoc(doc(db,'comandas_mesas','MESA'+i),{numero:i,status:'livre'},{merge:true});alert('Mesas 1-20 geradas');};
+window.zerarM=async(id)=>{if(confirm('Zerar?'))await deleteDoc(doc(db,'comandas_mesas',id));};
 window.addProd=async()=>{const nome=document.getElementById('nNome').value;const preco=parseFloat(document.getElementById('nPreco').value);if(!nome||!preco)return alert('Preencha');await addDoc(collection(db,'cardapio'),{nome,preco,desc:'',adicionais:[{nome:"Bacon",preco:4}],ativo:true});};
 window.toggleP=async(id,ativo)=>{await updateDoc(doc(db,'cardapio',id),{ativo:!ativo});};
-window.delCard=async(id)=>{if(confirm('Apagar?'))await deleteDoc(doc(db,'cardapio',id));};
-window.imprimir=async(id)=>{const w=window.open('','_blank');w.document.write(`<pre style="width:58mm;font-family:monospace">PEDIDO ${id.slice(0,5)}<br>---<br>Impressao 58mm<br>Use impressora termica</pre>`);w.print();};
-window.gravarNFC=async(num)=>{if(!('NDEFReader' in window))return alert('NFC só funciona no Android Chrome');try{const ndef=new NDEFReader();await ndef.write(location.origin.replace('/admin','')+'/?mesa='+num);alert('✅ TAG MESA '+num+' GRAVADA!');}catch(e){alert('Erro NFC: '+e);}};
+window.delC=async(id)=>{if(confirm('Apagar?'))await deleteDoc(doc(db,'cardapio',id));};
+window.imprimir=async(id)=>{const w=window.open('','_blank');w.document.write(`<pre style="width:58mm">PEDIDO ${id.slice(0,5)} - 58mm</pre>`);w.print();};
+window.nfc=async(num)=>{if(!('NDEFReader' in window))return alert('NFC só Android Chrome');try{const ndef=new NDEFReader();await ndef.write(location.origin.replace('/admin','')+'/?mesa='+num);alert('TAG MESA '+num+' GRAVADA');}catch(e){alert('Erro: '+e);}};
 </script></body></html>
