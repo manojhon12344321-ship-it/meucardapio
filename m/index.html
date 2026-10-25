@@ -1,175 +1,42 @@
 <!DOCTYPE html>
-<html lang="pt-BR">
-<head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Mesa - Cardápio</title>
-<script src="https://cdn.tailwindcss.com"></script>
-<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;700;900&display=swap" rel="stylesheet">
-<style>body{font-family:'Inter',sans-serif}</style>
-</head>
-<body class="bg-[#FFF8F0] text-zinc-900 min-h-screen">
-<div id="loading" class="p-10 text-center pt-24">
-<p class="text-2xl font-black">🍔 Abrindo cardápio...</p>
-<div class="w-10 h-10 border-4 border-black border-t-transparent rounded-full animate-spin mx-auto mt-6"></div>
-<p id="debug" class="text-[10px] text-gray-400 mt-4"></p>
+<html lang="pt-BR"><head><meta charset="UTF-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>Cardápio Mesa</title><script src="https://cdn.tailwindcss.com"></script><link rel="manifest" href="/manifest.json"><script>if('serviceWorker' in navigator){navigator.serviceWorker.register('/sw.js',{scope:'/'})}</script></head>
+<body class="bg-[#FFF8F0]">
+<div class="max-w-md mx-auto bg-white min-h-screen pb-[150px]">
+<div class="bg-black text-white p-4 flex justify-between sticky top-0 z-10"><div><h1 class="font-black">BURGER HOUSE</h1><p id="mesaNome" class="bg-white text-black px-3 py-1 rounded-full text-xs font-black inline-block mt-1">MESA 1</p></div><span class="bg-green-500 px-3 py-1 rounded-full text-[10px] font-black h-fit">● ABERTO</span></div>
+<div class="p-4"><div id="menu" class="grid gap-3"></div><div class="mt-6 bg-zinc-100 p-4 rounded-2xl"><p class="font-bold text-sm">Conta da Mesa <span id="mesaNumTxt"></span></p><p id="contaMesa" class="font-black text-xl">R$ 0,00 em aberto</p><p id="listaConta" class="text-xs text-zinc-500 mt-2"></p></div><button onclick="chamarGarcom()" class="w-full mt-4 bg-yellow-400 py-4 rounded-full font-black text-black text-sm">🔔 CHAMAR GARÇOM</button></div>
+<div class="fixed bottom-0 left-0 right-0 bg-white border-t p-4 max-w-md mx-auto flex justify-between items-center"><div><p id="qtd" class="text-[11px] text-zinc-500">0 itens</p><p id="total" class="font-black text-xl">R$ 0,00</p></div><button id="btnVer" class="bg-black text-white px-8 py-3 rounded-full font-black text-sm">VER SACOLA</button></div>
+<div id="modal" class="hidden fixed inset-0 bg-black/60 z-20 p-4 flex items-end justify-center"><div class="bg-white rounded-[28px] p-6 w-full max-w-md"><h3 class="font-black text-xl">Sua sacola</h3><div id="carrinho" class="mt-4 space-y-2 max-h-[30vh] overflow-auto"></div><input id="nome" placeholder="Seu nome *" class="w-full mt-3 bg-zinc-100 p-3 rounded-xl text-sm border"><input id="obs" placeholder="Obs: sem cebola" class="w-full mt-2 bg-zinc-100 p-3 rounded-xl text-sm border"><p id="totalModal" class="font-black text-2xl mt-3">Total: R$ 0,00</p><button id="btnEnviar" class="w-full mt-3 bg-black text-white py-4 rounded-full font-black">FAZER PEDIDO</button><button onclick="document.getElementById('modal').classList.add('hidden')" class="w-full mt-2 bg-zinc-100 py-3 rounded-full text-sm font-bold">Continuar pedindo</button></div></div>
 </div>
-
-<div id="card" class="hidden max-w-md mx-auto pb-[110px] bg-white min-h-screen shadow-xl">
-  <!-- HEADER BONITO -->
-  <div class="bg-black text-white p-5 flex justify-between items-center sticky top-0 z-10">
-    <div>
-      <h1 id="restNome" class="font-black text-lg leading-5">BURGER HOUSE</h1>
-      <p id="mesaNome" class="bg-white text-black px-2 py-0.5 rounded-full font-black text-xs mt-1 inline-block">MESA 4</p>
-    </div>
-    <span class="bg-green-500 text-white px-3 py-1 rounded-full text-[10px] font-black">● ABERTO</span>
-  </div>
-
-  <div class="p-4">
-    <div class="bg-orange-50 border border-orange-200 rounded-2xl p-3 text-center">
-      <p class="text-xs font-bold">📍 Você está pedindo na <span id="mesaTxt" class="text-orange-600">MESA 4</span></p>
-    </div>
-    <div id="categorias" class="flex gap-2 overflow-auto pb-2 mt-4"></div>
-    <div id="menu" class="mt-4 grid gap-3"></div>
-  </div>
-
-  <!-- BARRA TOTAL FIXA -->
-  <div class="fixed bottom-0 left-0 right-0 bg-white border-t p-4 max-w-md mx-auto z-10 shadow-[0_-10px_30px_rgba(0,0,0,0.1)]">
-    <div class="flex justify-between items-center">
-      <div>
-        <p class="text-[11px] text-zinc-500">Mesa <span id="mesaNum">4</span> • <span id="qtd">0</span> itens</p>
-        <p id="total" class="font-black text-xl">R$ 0,00</p>
-      </div>
-      <button id="btnVer" class="bg-black text-white px-6 py-3 rounded-full font-black text-sm">Ver sacola →</button>
-    </div>
-  </div>
-
-  <!-- MODAL CARRINHO -->
-  <div id="modal" class="hidden fixed inset-0 bg-black/60 z-20 p-4 flex items-end justify-center">
-    <div class="bg-white rounded-[28px] p-6 w-full max-w-md max-h-[85vh] overflow-auto">
-      <div class="flex justify-between items-center"><h3 class="font-black text-xl">Sua sacola</h3><button onclick="fechar()" class="bg-zinc-100 w-8 h-8 rounded-full">✕</button></div>
-      <div id="carrinho" class="mt-4 space-y-2 max-h-[35vh] overflow-auto"></div>
-      <div class="border-t mt-4 pt-4">
-        <input id="nome" class="w-full bg-zinc-100 border p-3 rounded-xl text-sm" placeholder="Seu nome *">
-        <textarea id="obs" class="w-full mt-2 bg-zinc-100 border p-3 rounded-xl text-sm" placeholder="Observação: tirar cebola, sem pimenta..."></textarea>
-        <p id="totalModal" class="font-black text-2xl mt-3">Total: R$ 0,00</p>
-        <button id="btnEnviar" class="w-full mt-3 bg-black text-white py-4 rounded-full font-black text-base">FINALIZAR PEDIDO</button>
-        <button onclick="chamarGarcom()" class="w-full mt-2 bg-zinc-100 py-3 rounded-full text-sm font-bold">🔔 CHAMAR GARÇOM</button>
-        <p class="text-[10px] text-zinc-400 text-center mt-3">Pedido vai direto pra cozinha</p>
-      </div>
-    </div>
-  </div>
-</div>
-
-<div id="ok" class="hidden fixed inset-0 bg-white z-30 p-8 text-center pt-20">
-<h2 class="text-5xl">✅</h2><h1 class="font-black text-3xl mt-3">PEDIDO ENVIADO!</h1><p class="text-zinc-500 mt-2">A cozinha já recebeu</p><p id="okId" class="font-mono bg-zinc-100 px-3 py-1 rounded-full inline-block mt-4"></p><button onclick="location.reload()" class="mt-8 bg-black text-white px-8 py-3 rounded-full font-black w-full">NOVO PEDIDO</button>
-</div>
-
+<div id="ok" class="hidden fixed inset-0 bg-white z-30 p-8 text-center pt-20"><h2 class="text-6xl">✅</h2><h1 class="font-black text-2xl mt-3">PEDIDO ENVIADO!</h1><p class="text-sm text-zinc-500 mt-2">Já está na cozinha. Pode pedir mais na mesma mesa.</p><button onclick="location.reload()" class="mt-6 bg-black text-white px-8 py-4 rounded-full font-black w-full">PEDIR MAIS ITENS</button></div>
 <script type="module">
 import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-app.js";
-import { getFirestore, collection, query, where, getDocs, addDoc, serverTimestamp, doc, setDoc } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js";
-
-const firebaseConfig = {
-  apiKey: "AIzaSyBBnA9orBCf3j1_3nRHWcIctLe7aKMgcI8",
-  authDomain: "mapapet-ad359.firebaseapp.com",
-  projectId: "mapapet-ad359",
-  storageBucket: "mapapet-ad359.firebasestorage.app",
-  messagingSenderId: "268931015194",
-  appId: "1:268931015194:web:5ae634751c3be46ebe67a3"
-};
-
-const db = getFirestore(initializeApp(firebaseConfig));
-const sid = new URLSearchParams(location.search).get('sid') || new URLSearchParams(location.search).get('mesa') || 'MESA4';
-document.getElementById('debug').textContent = 'SID: ' + sid;
-
-let carrinho = [];
-let mesaNumero = sid.replace(/\D/g,'') || '4';
-let restNome = 'BURGER HOUSE';
-
-async function load(){
-  try{
-    // Tenta achar mesa no firebase
-    const q = query(collection(db,'mesas_nfc'), where('shortId','==', sid));
-    const snap = await getDocs(q);
-    if(!snap.empty){
-      const mesa = snap.docs[0].data();
-      mesaNumero = mesa.numero;
-      restNome = mesa.restaurante;
-    }
-    document.getElementById('restNome').textContent = restNome;
-    document.getElementById('mesaNome').textContent = 'MESA ' + mesaNumero;
-    document.getElementById('mesaNum').textContent = mesaNumero;
-    document.getElementById('mesaTxt').textContent = 'MESA ' + mesaNumero;
-
-    // Cardapio
-    const q2 = await getDocs(collection(db,'cardapio'));
-    let cardapio = [];
-    q2.forEach(d => cardapio.push({id:d.id,...d.data()}));
-    if(cardapio.length === 0) cardapio = [
-      {nome:'X-Burger Clássico', preco:28.90, categoria:'Burgers', desc:'Pão brioche, blend 180g, cheddar'},
-      {nome:'X-Bacon Smash', preco:38.90, categoria:'Burgers', desc:'2x smash 100g + bacon crocante'},
-      {nome:'Batata com Cheddar', preco:28.00, categoria:'Porções', desc:'300g com cheddar e bacon'},
-      {nome:'Coca Lata', preco:6.00, categoria:'Bebidas', desc:'350ml gelada'},
-    ];
-    renderMenu(cardapio);
-    document.getElementById('loading').classList.add('hidden');
-    document.getElementById('card').classList.remove('hidden');
-  } catch(e){
-    document.getElementById('debug').textContent = 'Erro: ' + e.message;
-  }
-}
-
-function renderMenu(cardapio){
-  const cats = [...new Set(cardapio.map(i => i.categoria || 'Geral'))];
-  document.getElementById('categorias').innerHTML = `<button onclick="renderMenu(window._fullMenu)" class="bg-black text-white px-4 py-2 rounded-full text-xs font-bold">Todos</button>` + cats.map(c => `<button onclick="filtrar('${c}')" class="bg-zinc-100 px-4 py-2 rounded-full text-xs font-bold whitespace-nowrap">${c}</button>`).join('');
-  window._fullMenu = cardapio;
-  document.getElementById('menu').innerHTML = cardapio.map(item => `
-    <div class="bg-white border rounded-2xl p-4 flex gap-3 shadow-sm">
-      <div class="w-16 h-16 bg-zinc-100 rounded-xl flex items-center justify-center text-3xl">🍔</div>
-      <div class="flex-1">
-        <p class="font-black text-sm">${item.nome}</p>
-        <p class="text-[11px] text-zinc-500">${item.desc || ''}</p>
-        <p class="font-black mt-1 text-sm">R$ ${Number(item.preco).toFixed(2)}</p>
-      </div>
-      <button onclick="addItem('${item.nome.replace(/'/g,'')}',${Number(item.preco)})" class="bg-black text-white h-10 px-4 rounded-full font-black text-sm self-center">+</button>
-    </div>`).join('');
-}
-window.filtrar = (cat) => { renderMenu(window._fullMenu.filter(i=>(i.categoria||'Geral')==cat)); };
-
-window.addItem = (nome, preco) => { carrinho.push({nome, preco}); updateTotal(); };
-
-function updateTotal(){
-  const total = carrinho.reduce((s,i)=>s+i.preco,0);
-  document.getElementById('total').textContent = 'R$ ' + total.toFixed(2);
-  document.getElementById('totalModal').textContent = 'Total: R$ ' + total.toFixed(2);
-  document.getElementById('qtd').textContent = carrinho.length;
-  document.getElementById('carrinho').innerHTML = carrinho.map((i,idx) => `<div class="flex justify-between bg-zinc-50 p-3 rounded-xl text-sm"><span>${i.nome}</span><div class="flex gap-2"><span class="font-bold">R$ ${i.preco.toFixed(2)}</span><button onclick="carrinho.splice(${idx},1);updateTotal()" class="text-red-500">✕</button></div></div>`).join('') || '<p class="text-zinc-400 text-sm">Nenhum item</p>';
-}
-
-document.getElementById('btnVer').addEventListener('click', () => { if(carrinho.length==0){alert('Sacola vazia');return;} document.getElementById('modal').classList.remove('hidden'); });
-window.fechar = () => document.getElementById('modal').classList.add('hidden');
-
-document.getElementById('btnEnviar').addEventListener('click', async () => {
-  if(carrinho.length === 0) return alert('Adicione itens');
-  const nome = document.getElementById('nome').value.trim();
-  if(!nome) return alert('Digite seu nome');
-  const obs = document.getElementById('obs').value;
-  const total = carrinho.reduce((s,i)=>s+i.preco,0);
-  try{
-    const ref = await addDoc(collection(db,'pedidos'),{ cliente:nome, local:'Mesa '+mesaNumero, mesa:mesaNumero, shortId:sid, itens:carrinho, total, obs, status:'novo', criadoEm:serverTimestamp(), restaurante:restNome });
-    await setDoc(doc(db,'comandas_mesas','MESA'+mesaNumero),{numero:parseInt(mesaNumero), cliente:nome, status:'ocupada', ultimoPedido:serverTimestamp()},{merge:true});
-    document.getElementById('modal').classList.add('hidden');
-    document.getElementById('ok').classList.remove('hidden');
-    document.getElementById('okId').textContent = '#'+ref.id.slice(0,5).toUpperCase();
-    carrinho = []; updateTotal();
-  } catch(e){ alert('Erro: '+e.message); }
+import { getFirestore, collection, getDocs, addDoc, serverTimestamp, doc, setDoc, onSnapshot, query, where } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js";
+const cfg={apiKey:"AIzaSyBBnA9orBCf3j1_3nRHWcIctLe7aKMgcI8",authDomain:"mapapet-ad359.firebaseapp.com",projectId:"mapapet-ad359",storageBucket:"mapapet-ad359.firebasestorage.app",messagingSenderId:"268931015194",appId:"1:268931015194:web:5ae634751c3be46ebe67a3"};
+const db=getFirestore(initializeApp(cfg));
+const sid=new URLSearchParams(location.search).get('mesa')||new URLSearchParams(location.search).get('sid')||'1';
+let mesaNumero=sid.replace(/\D/g,'')||'1';
+document.getElementById('mesaNome').textContent='MESA '+mesaNumero;document.getElementById('mesaNumTxt').textContent=mesaNumero;
+setDoc(doc(db,'comandas_mesas','MESA'+mesaNumero),{numero:parseInt(mesaNumero),status:'visualizando',ultimoAcesso:serverTimestamp(),abriuEm:serverTimestamp()},{merge:true});
+let contaTotal=0;
+onSnapshot(query(collection(db,'pedidos'),where('mesa','==',mesaNumero)), snap=>{
+let total=0;let lista=[];snap.forEach(d=>{let p=d.data();if(p.status!=='entregue' && p.status!=='pago' && p.tipo!=='chamar_garcom'){total+=Number(p.total||0);(p.itens||[]).forEach(i=>lista.push(i.nome));}});contaTotal=total;document.getElementById('contaMesa').textContent='R$ '+total.toFixed(2)+' em aberto';document.getElementById('listaConta').textContent=lista.join(', ');
 });
-
-window.chamarGarcom = async () => {
-  try{ await addDoc(collection(db,'pedidos'),{ cliente:'CHAMAR GARÇOM', local:'Mesa '+mesaNumero, mesa:mesaNumero, shortId:sid, tipo:'chamar_garcom', status:'novo', criadoEm:serverTimestamp() }); alert('Garçom chamado! Mesa ' + mesaNumero); } catch(e){ alert('Erro'); }
+let carrinho=[];let cardapio=[];
+async function load(){let snap=await getDocs(collection(db,'cardapio'));snap.forEach(d=>cardapio.push({id:d.id,...d.data()}));if(cardapio.length==0)cardapio=[{nome:'X-Bacon',preco:32,desc:'Artesanal 180g',foto:''},{nome:'Batata Frita',preco:28,desc:'400g crocante',foto:''}];document.getElementById('menu').innerHTML=cardapio.map(item=>`<div class="bg-white border rounded-2xl p-3 flex gap-3"><img src="${item.foto||'https://via.placeholder.com/100'}" class="w-16 h-16 rounded-xl object-cover bg-zinc-100"><div class="flex-1"><p class="font-black text-sm">${item.nome}</p><p class="text-[11px] text-zinc-500">${item.desc||item.categoria||''}</p><p class="font-black text-sm mt-1">R$ ${Number(item.preco).toFixed(2)}</p></div><button onclick="addItem('${item.nome.replace(/'/g,'')}',${Number(item.preco)})" class="bg-black text-white h-9 px-5 rounded-full text-sm font-black">+</button></div>`).join('');}
+window.addItem=(n,p)=>{carrinho.push({nome:n,preco:p});update();};
+function update(){let t=carrinho.reduce((s,i)=>s+i.preco,0);document.getElementById('total').textContent='R$ '+t.toFixed(2);document.getElementById('totalModal').textContent='Total: R$ '+t.toFixed(2);document.getElementById('qtd').textContent=carrinho.length+' itens';document.getElementById('carrinho').innerHTML=carrinho.map(i=>`<div class="flex justify-between bg-zinc-50 p-2 rounded-xl text-sm"><span>${i.nome}</span><span>R$ ${i.preco.toFixed(2)}</span></div>`).join('');}
+document.getElementById('btnVer').onclick=()=>{if(carrinho.length==0)return alert('Sacola vazia');document.getElementById('modal').classList.remove('hidden');};
+let enviando=false;
+document.getElementById('btnEnviar').onclick=async()=>{
+if(enviando)return;enviando=true;let btn=document.getElementById('btnEnviar');btn.textContent='ENVIANDO... NÃO CLIQUE DE NOVO';btn.disabled=true;
+let nome=document.getElementById('nome').value.trim();if(!nome){alert('Digite nome');enviando=false;btn.textContent='FAZER PEDIDO';btn.disabled=false;return;}
+let ip='';try{let r=await fetch('https://api.ipify.org?format=json');let j=await r.json();ip=j.ip;}catch(e){ip='sem-ip';}
+let total=carrinho.reduce((s,i)=>s+i.preco,0);let obs=document.getElementById('obs').value;
+await addDoc(collection(db,'pedidos'),{cliente:nome,mesa:mesaNumero,local:'Mesa '+mesaNumero,shortId:sid,itens:carrinho,total,obs,status:'novo',criadoEm:serverTimestamp(),ip,userAgent:navigator.userAgent,log:'Pedido '+new Date().toLocaleString()});
+await setDoc(doc(db,'comandas_mesas','MESA'+mesaNumero),{numero:parseInt(mesaNumero),cliente:nome,status:'ocupada',total:contaTotal+total,ultimoAcesso:serverTimestamp(),ultimoPedido:serverTimestamp()},{merge:true});
+document.getElementById('modal').classList.add('hidden');document.getElementById('ok').classList.remove('hidden');carrinho=[];update();
+setTimeout(()=>{enviando=false;btn.textContent='FAZER PEDIDO';btn.disabled=false;},10000);
 };
-
+window.chamarGarcom=async()=>{let nome=document.getElementById('nome')?.value||'Mesa '+mesaNumero;await addDoc(collection(db,'pedidos'),{mesa:mesaNumero,cliente:nome,tipo:'chamar_garcom',total:0,status:'novo',criadoEm:serverTimestamp()});alert('Garçom chamado!');};
 load();
-</script>
-</body>
-</html>
+</script></body></html>
