@@ -1,51 +1,207 @@
 <!DOCTYPE html>
 <html lang="pt-BR">
 <head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Meu Cardápio - Garçom NFC | Teixeira de Freitas</title>
+<meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Meu Burger Teixeira - Cardápio Digital</title>
 <script src="https://cdn.tailwindcss.com"></script>
-<link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@700;900&display=swap" rel="stylesheet">
-<style>body{font-family:'Space Grotesk',sans-serif}</style>
+<link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@500;700;900&display=swap" rel="stylesheet">
+<style>body{font-family:'Space Grotesk'} .scroll-hide::-webkit-scrollbar{display:none}</style>
 </head>
-<body class="bg-[#080808] text-white antialiased">
+<body class="bg-[#070707] text-white">
+<div class="max-w-[480px] mx-auto min-h-screen bg-[#0F0F0F] relative">
 
-<header class="flex justify-between items-center p-5 max-w-6xl mx-auto">
-  <div class="flex gap-2 items-center"><span class="text-2xl">🍔</span><b>Meu Cardápio</b><span class="text-xs bg-white/10 px-2 py-1 rounded-full ml-2">NFC</span></div>
-  <a href="painel/" class="bg-white/10 hover:bg-white/20 px-5 py-2 rounded-full text-xs font-black">Painel do Dono</a>
-</header>
+<!-- TOPO -->
+<div class="relative h-[200px]">
+<img src="https://images.unsplash.com/photo-1550547660-d9450f859349?w=800" class="w-full h-full object-cover">
+<div class="absolute inset-0 bg-gradient-to-t from-[#0F0F0F] via-[#0F0F0F]/60 to-transparent"></div>
+<div class="absolute bottom-0 p-5 flex gap-3 items-center w-full">
+<div class="w-14 h-14 bg-yellow-400 rounded-2xl flex items-center justify-center text-2xl">🍔</div>
+<div class="flex-1"><h1 id="tituloTopo" class="font-black text-[18px] leading-4">MEU BURGER TEIXEIRA</h1><p id="subTopo" class="text-[11px] text-white/60 mt-1">Cardápio Digital • Sem Taxas</p></div>
+<div id="badgeMesa" class="hidden bg-yellow-400 text-black px-3 py-1 rounded-full text-[11px] font-black">MESA</div>
+</div>
+</div>
 
-<section class="max-w-6xl mx-auto px-5 py-10 md:py-20 grid md:grid-cols-2 gap-10 items-center">
-  <div>
-    <span class="bg-yellow-400 text-black px-3 py-1 rounded-full text-[11px] font-black">NOVO EM TEIXEIRA DE FREITAS - BA</span>
-    <h1 class="text-5xl md:text-7xl font-black leading-[0.85] mt-5">CLIENTE<br>ENCOSTA,<br><span class="text-yellow-400">PEDE SOZINHO.</span></h1>
-    <p class="text-gray-400 mt-6 text-lg leading-6">Tag NFC na mesa. Cliente aproxima o celular. Cardápio abre na hora. Pedido vai direto no WhatsApp da cozinha. Sem baixar app.</p>
-    <div class="flex flex-wrap gap-3 mt-8">
-      <a href="#preco" class="bg-yellow-400 text-black px-8 py-4 rounded-full font-black text-sm">QUERO NO MEU RESTAURANTE</a>
-      <a href="m/?sid=DEMO-MESA4" class="bg-white/10 px-8 py-4 rounded-full font-black text-sm">Ver Demo Ao Vivo</a>
-    </div>
-    <p class="text-[11px] text-gray-500 mt-4">✓ Economiza 1 garçom ✓ Gira mesa 30% mais rápido ✓ Cliente paga Pix na mesa</p>
-  </div>
-  <div class="bg-[#161616] border border-white/10 rounded-[32px] p-3">
-    <div class="bg-black rounded-[24px] p-5">
-      <p class="text-[10px] text-gray-500 tracking-widest">COMO FUNCIONA NA MESA 4</p>
-      <div class="mt-4 space-y-3 text-sm">
-        <div class="flex gap-3"><span>📱</span><span>Cliente encosta celular na tag NFC da mesa</span></div>
-        <div class="flex gap-3"><span>🍔</span><span>Cardápio abre instantâneo, sem app</span></div>
-        <div class="flex gap-3"><span>✅</span><span>Clica em +Add e envia no Whats da cozinha</span></div>
-        <div class="flex gap-3"><span>🔔</span><span>Chama garçom com 1 toque</span></div>
-        <div class="flex gap-3"><span>💳</span><span>Paga Pix direto na mesa</span></div>
-      </div>
-      <div class="mt-6 bg-yellow-400 text-black p-3 rounded-xl text-center font-black text-xs">TESTE AGORA: /m/?sid=DEMO-MESA4</div>
-    </div>
-  </div>
-</section>
+<!-- CATEGORIAS -->
+<div id="cats" class="sticky top-0 z-10 bg-[#0F0F0F]/95 backdrop-blur p-3 flex gap-2 overflow-auto scroll-hide border-b border-white/10"></div>
 
-<section id="preco" class="max-w-6xl mx-auto px-5 pb-20 grid md:grid-cols-3 gap-6">
-  <div class="bg-white text-black rounded-[32px] p-8"><h3 class="font-black text-2xl">Kit 10 Mesas</h3><p class="text-4xl font-black mt-4">R$297</p><p class="text-sm text-gray-500">+ R$97/mês</p><ul class="mt-6 space-y-2 text-sm"><li>✓ 10 Tags NFC à prova d'água</li><li>✓ QR Code de backup</li><li>✓ Cardápio com fotos</li><li>✓ Pedidos ao vivo</li></ul><a href="https://wa.me/5573999999999?text=Quero%20Meu%20Cardapio%2010%20mesas" class="block mt-8 bg-black text-white py-4 rounded-full text-center font-black text-sm">Contratar</a></div>
-  <div class="bg-yellow-400 text-black rounded-[32px] p-8 border-4 border-white scale-105"><span class="bg-black text-yellow-400 px-3 py-1 rounded-full text-[10px] font-black">MAIS VENDIDO</span><h3 class="font-black text-2xl mt-3">Kit 20 Mesas</h3><p class="text-4xl font-black mt-4">R$497</p><p class="text-sm">+ R$97/mês</p><ul class="mt-6 space-y-2 text-sm font-black"><li>✓ 20 Tags NFC</li><li>✓ Botão Chamar Garçom</li><li>✓ Pix na mesa</li><li>✓ Relatório vendas</li></ul><a href="https://wa.me/5573999999999?text=Quero%20Meu%20Cardapio%2020%20mesas" class="block mt-8 bg-black text-white py-4 rounded-full text-center font-black text-sm">Contratar Agora</a></div>
-  <div class="bg-[#161616] border border-white/10 rounded-[32px] p-8"><h3 class="font-black text-2xl">Rede</h3><p class="text-4xl font-black mt-4">R$997</p><p class="text-sm text-gray-400">+ R$197/mês</p><ul class="mt-6 space-y-2 text-sm text-gray-300"><li>✓ 50 Tags NFC</li><li>✓ 3 unidades</li><li>✓ Dashboard central</li><li>✓ Domínio próprio</li></ul><a href="https://wa.me/5573999999999?text=Quero%20Rede" class="block mt-8 bg-white text-black py-4 rounded-full text-center font-black text-sm">Falar com Consultor</a></div>
-</section>
-<footer class="text-center p-10 text-[10px] text-gray-600">Meu Cardápio NFC • Teixeira de Freitas - BA • Encostou, pediu.</footer>
+<!-- LISTA PRODUTOS -->
+<div id="menu" class="p-4 grid gap-3 pb-[120px]"></div>
+
+<!-- SACOLA FIXA COM PREVIEW -->
+<div class="fixed bottom-0 left-0 right-0 max-w-[480px] mx-auto bg-[#161616] border-t border-white/10 p-4 rounded-t-[24px] z-20">
+<div class="flex justify-between items-center">
+<div class="flex-1 mr-3"><p id="qtd" class="text-[11px] text-gray-400">Nenhum item</p><p id="total" class="font-black text-xl">R$ 0,00</p><p id="preview" class="text-[10px] text-gray-500 truncate">Sem itens</p></div>
+<button id="btnSacola" class="bg-yellow-400 text-black px-7 py-3 rounded-full font-black text-sm shrink-0">Ver pedido 👀</button>
+</div>
+</div>
+
+<!-- MODAL ITEM - ADICIONAIS + OBS POR ITEM -->
+<div id="modalItem" class="hidden fixed inset-0 bg-black/80 z-30 p-4 flex items-end justify-center">
+<div class="bg-[#1c1c1c] border border-white/10 rounded-[28px] w-full max-w-md p-6 max-h-[90vh] overflow-auto">
+<div class="flex justify-between items-start"><div class="flex-1"><h3 id="itemNome" class="font-black text-[18px]">Item</h3><p id="itemDesc" class="text-[12px] text-gray-400 mt-1"></p><p id="itemPrecoBase" class="text-yellow-400 font-black mt-2"></p></div><button onclick="fecharItem()" class="bg-white/10 w-8 h-8 rounded-full ml-3">✕</button></div>
+<div class="mt-5"><p class="text-[11px] font-black tracking-widest text-white/80">ADICIONAIS</p><div id="listaAdicionais" class="mt-3 space-y-2"></div></div>
+<div class="mt-5"><p class="text-[11px] font-black tracking-widest text-white/80">OBSERVAÇÃO DESTE ITEM</p><textarea id="obsItem" class="w-full mt-2 bg-black border border-white/10 p-3 rounded-xl text-[13px]" rows="2" placeholder="Ex: tirar cebola, carne bem passada, sem picles"></textarea></div>
+<div class="mt-6 flex justify-between items-center bg-black rounded-2xl p-4 border border-white/10"><p id="precoFinalItem" class="font-black text-xl">R$ 0,00</p><button onclick="confirmarItem()" class="bg-yellow-400 text-black px-8 py-3 rounded-full font-black text-sm">Adicionar</button></div>
+</div>
+</div>
+
+<!-- MODAL SACOLA DETALHADO -->
+<div id="modal" class="hidden fixed inset-0 bg-black/90 z-30 p-4 flex items-end justify-center">
+<div class="bg-[#1c1c1c] rounded-[28px] w-full max-w-md p-6 max-h-[92vh] overflow-auto">
+<div class="flex justify-between items-center"><h3 class="font-black text-xl">Seu Pedido Detalhado</h3><button onclick="fechar()" class="bg-white/10 w-8 h-8 rounded-full">✕</button></div>
+<div id="listaCarrinho" class="mt-5 space-y-3"></div>
+<div class="mt-5 bg-black rounded-2xl p-4 border border-white/10"><div class="flex justify-between"><span class="text-sm text-gray-400">Subtotal (sem taxas)</span><span id="subModal" class="font-bold">R$ 0,00</span></div><div class="flex justify-between text-[18px] mt-2"><span class="font-black">Total</span><span id="totalModal" class="font-black text-yellow-400">R$ 0,00</span></div><p class="text-[10px] text-gray-500 mt-2">Sem taxas • Você paga só o que pediu + adicionais</p></div>
+<div class="mt-5 space-y-3">
+<input id="clienteNome" class="w-full bg-black border border-white/10 p-4 rounded-xl text-sm" placeholder="Seu nome *">
+<input id="clienteLocal" class="w-full bg-black border border-white/10 p-4 rounded-xl text-sm" placeholder="Mesa ex: Mesa 4 ou Endereço *">
+<button onclick="pegarGPS()" class="text-[11px] text-yellow-400 font-bold text-left">📍 Usar minha localização atual (entrega)</button>
+<select id="pagamento" class="w-full bg-black border border-white/10 p-4 rounded-xl text-sm"><option>Pix</option><option>Dinheiro</option><option>Cartão na entrega</option></select>
+</div>
+<button onclick="finalizar()" class="w-full mt-5 bg-yellow-400 text-black py-4 rounded-xl font-black text-[15px]">CONFIRMAR PEDIDO 🔥</button>
+</div>
+</div>
+
+<!-- TELA OK + ACOMPANHAMENTO -->
+<div id="ok" class="hidden fixed inset-0 bg-[#070707] z-40 p-6 overflow-auto">
+<div class="max-w-md mx-auto text-center pt-6">
+<p class="text-6xl">✅</p><h2 class="text-3xl font-black mt-4">Pedido enviado!</h2><p id="okId" class="text-yellow-400 font-black mt-2 text-xl"></p>
+<div id="tempoCliente" class="mt-6 bg-yellow-400 text-black rounded-[20px] p-5 hidden text-left"><p class="text-[10px] font-black tracking-widest">STATUS AO VIVO</p><p id="statusCliente" class="font-black mt-1">Aguardando cozinha aceitar...</p><div class="mt-3 bg-black/10 rounded-xl p-3"><p class="text-[11px] font-bold">TEMPO ESTIMADO</p><p id="tempoClienteTxt" class="text-3xl font-black">-- min</p><p id="contadorCliente" class="text-[13px] font-bold mt-1">--</p></div><p class="text-[11px] mt-3">Mesa/Local: <span id="mesaClienteTxt" class="font-black"></span></p></div>
+<div id="detalheOk" class="mt-6 bg-[#111] border border-white/10 rounded-2xl p-4 text-left text-[13px]"></div>
+<div class="mt-4 bg-[#111] rounded-2xl p-3"><p class="text-[10px] text-gray-500">LINK DE ACOMPANHAMENTO</p><p id="linkAcomp" class="text-[11px] text-yellow-400 break-all mt-1"></p><button onclick="copiarLinkAcomp()" class="mt-2 bg-white/10 px-4 py-2 rounded-full text-[11px]">Copiar link</button></div>
+<button onclick="location.href=location.pathname+location.search.split('&')[0]" class="mt-6 w-full bg-white text-black py-4 rounded-full font-black">Fazer novo pedido</button>
+</div>
+</div>
+
+</div>
+
+<script type="module">
+import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-app.js";
+import { getFirestore, collection, onSnapshot, addDoc, serverTimestamp, doc, getDocs, query, where, setDoc } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js";
+const firebaseConfig={apiKey:"AIzaSyBBnA9orBCf3j1_3nRHWcIctLe7aKMgcI8",authDomain:"mapapet-ad359.firebaseapp.com",projectId:"mapapet-ad359",storageBucket:"mapapet-ad359.firebasestorage.app",messagingSenderId:"268931015194",appId:"1:268931015194:web:5ae634751c3be46ebe67a3"};
+const app=initializeApp(firebaseConfig); const db=getFirestore(app);
+
+// URL MESA E PEDIDO
+const urlParams=new URLSearchParams(window.location.search);
+const MESA_URL=urlParams.get('mesa');
+const PEDIDO_URL=urlParams.get('pedido');
+if(MESA_URL){
+  document.getElementById('tituloTopo').textContent='MESA '+MESA_URL;
+  document.getElementById('subTopo').textContent='Você está na Mesa '+MESA_URL+' • Pedido via NFC/QR';
+  document.getElementById('badgeMesa').classList.remove('hidden');
+  document.getElementById('badgeMesa').textContent='MESA '+MESA_URL;
+}
+let carrinho=[]; let cardapioData=[]; let itemTemp=null;
+const ADICIONAIS=[{nome:'Bacon extra',preco:4},{nome:'Cheddar extra',preco:3},{nome:'Ovo',preco:3},{nome:'Hambúrguer 180g extra',preco:12},{nome:'Catupiry',preco:3},{nome:'Calabresa',preco:5}];
+
+onSnapshot(collection(db,'cardapio'),snap=>{
+  cardapioData=[]; snap.forEach(d=>{const data=d.data(); if(data.ativo!==false) cardapioData.push({id:d.id,...data});});
+  if(cardapioData.length===0){ cardapioData=[
+    {nome:"X-Burguer Artesanal 180g",preco:28,categoria:"Lanches",desc:"Pão brioche, blend 180g, cheddar cremoso",ativo:true},
+    {nome:"X-Bacon Duplo",preco:38,categoria:"Lanches",desc:"2 burgers + bacon crocante",ativo:true},
+    {nome:"X-Tudo Teixeira",preco:42,categoria:"Lanches",desc:"Completo da casa",ativo:true},
+    {nome:"Batata G 400g",preco:36,categoria:"Porções",desc:"Cheddar, bacon e cebolinha",ativo:true},
+    {nome:"Batata P 200g",preco:18,categoria:"Porções",desc:"Individual",ativo:true},
+    {nome:"Coca Lata 350ml",preco:6,categoria:"Bebidas",desc:"Gelada",ativo:true}
+  ];}
+  const cats=[...new Set(cardapioData.map(c=>c.categoria||'Geral'))];
+  document.getElementById('cats').innerHTML=`<button onclick="filtrar('Todos')" class="bg-yellow-400 text-black px-5 py-2 rounded-full text-xs font-black shrink-0">Todos</button>`+cats.map(c=>`<button onclick="filtrar('${c}')" class="bg-white/10 px-5 py-2 rounded-full text-xs shrink-0">${c}</button>`).join('');
+  lista(cardapioData);
+});
+window.filtrar=(cat)=>{ if(cat==='Todos') lista(cardapioData); else lista(cardapioData.filter(c=>(c.categoria||'Geral')===cat)); };
+function lista(itens){
+  document.getElementById('menu').innerHTML=itens.map(item=>`
+    <div class="bg-[#161616] border border-white/10 rounded-[20px] p-4 flex gap-3">
+      <img src="https://images.unsplash.com/photo-1568909344668-6f14a07b56a0?w=200" class="w-16 h-16 rounded-xl object-cover">
+      <div class="flex-1"><p class="font-black text-[14px] leading-4">${item.nome}</p><p class="text-[11px] text-gray-400 mt-1">${item.desc||''}</p><div class="flex justify-between items-center mt-2"><p class="font-black text-yellow-400 text-sm">R$ ${Number(item.preco).toFixed(2)}</p><button onclick="abrirItem('${item.id}')" class="bg-white text-black w-9 h-9 rounded-full font-black text-lg">+</button></div></div>
+    </div>`).join('');
+}
+window.abrirItem=(id)=>{
+  itemTemp=cardapioData.find(c=>c.id===id); if(!itemTemp) return;
+  document.getElementById('itemNome').textContent=itemTemp.nome;
+  document.getElementById('itemDesc').textContent=itemTemp.desc||'';
+  document.getElementById('itemPrecoBase').textContent='Base R$ '+Number(itemTemp.preco).toFixed(2);
+  document.getElementById('obsItem').value='';
+  document.getElementById('listaAdicionais').innerHTML=ADICIONAIS.map((a,i)=>`<label class="flex justify-between items-center bg-black border border-white/10 rounded-xl p-3 text-[13px]"><span class="flex items-center"><input type="checkbox" id="ad_${i}" onchange="calcFinal()" class="mr-2 w-4 h-4"> ${a.nome}</span><span class="text-yellow-400 font-black">+R$ ${a.preco}</span></label>`).join('');
+  calcFinal(); document.getElementById('modalItem').classList.remove('hidden');
+};
+window.fecharItem=()=>document.getElementById('modalItem').classList.add('hidden');
+window.calcFinal=()=>{
+  let total=Number(itemTemp.preco);
+  ADICIONAIS.forEach((a,i)=>{ if(document.getElementById('ad_'+i)?.checked) total+=a.preco; });
+  document.getElementById('precoFinalItem').textContent='R$ '+total.toFixed(2); return total;
+};
+window.confirmarItem=()=>{
+  const total=calcFinal(); let adds=[]; ADICIONAIS.forEach((a,i)=>{ if(document.getElementById('ad_'+i)?.checked) adds.push(a.nome+' (+R$'+a.preco+')'); });
+  const obs=document.getElementById('obsItem').value.trim();
+  carrinho.push({nome:itemTemp.nome,preco:total,base:Number(itemTemp.preco),adicionais:adds,obs:obs,desc:itemTemp.desc});
+  fecharItem(); upd();
+};
+function upd(){
+  const total=carrinho.reduce((s,i)=>s+i.preco,0);
+  document.getElementById('total').textContent='R$ '+total.toFixed(2);
+  document.getElementById('totalModal').textContent='R$ '+total.toFixed(2);
+  document.getElementById('subModal').textContent='R$ '+total.toFixed(2);
+  document.getElementById('qtd').textContent=carrinho.length===0?'Nenhum item':carrinho.length+' itens';
+  document.getElementById('preview').textContent=carrinho.length===0?'Sem itens':carrinho.map(c=>c.nome).join(', ');
+  document.getElementById('listaCarrinho').innerHTML=carrinho.length===0?'<p class="text-gray-500 text-sm text-center">Sacola vazia</p>':carrinho.map((c,i)=>`<div class="bg-black border border-white/10 rounded-2xl p-4"><div class="flex justify-between"><div class="flex-1 mr-3"><p class="font-black text-[13px]">${c.nome}</p>${c.adicionais?.length?`<p class="text-[11px] text-yellow-400 mt-1">+ ${c.adicionais.join(', ')}</p>`:''}${c.obs?`<p class="text-[11px] text-gray-400 mt-1">Obs: ${c.obs}</p>`:''}<p class="text-yellow-400 font-black text-[13px] mt-2">R$ ${c.preco.toFixed(2)} ${c.base!==c.preco?`<span class="text-[10px] text-gray-500">(base R$ ${c.base.toFixed(2)})</span>`:''}</p></div><button onclick="rem(${i})" class="bg-red-500/20 text-red-400 w-8 h-8 rounded-full shrink-0">✕</button></div></div>`).join('');
+}
+window.rem=(i)=>{carrinho.splice(i,1);upd();};
+document.getElementById('btnSacola').onclick=()=>{
+  if(carrinho.length===0) return alert('Adicione itens');
+  document.getElementById('modal').classList.remove('hidden');
+  if(MESA_URL){ document.getElementById('clienteLocal').value='Mesa '+MESA_URL; document.getElementById('clienteLocal').readOnly=true; document.getElementById('clienteLocal').classList.add('bg-yellow-400/20','border-yellow-400'); }
+};
+window.fechar=()=>document.getElementById('modal').classList.add('hidden');
+window.pegarGPS=()=>{ if(!navigator.geolocation) return alert('GPS não suportado'); navigator.geolocation.getCurrentPosition(pos=>{ document.getElementById('clienteLocal').value=`Entrega - https://maps.google.com/?q=${pos.coords.latitude},${pos.coords.longitude}`; },()=>alert('Ative o GPS')); };
+
+window.finalizar=async()=>{
+  const nome=document.getElementById('clienteNome').value.trim();
+  let local=document.getElementById('clienteLocal').value.trim();
+  if(MESA_URL) local='Mesa '+MESA_URL;
+  const pag=document.getElementById('pagamento').value;
+  if(!nome||!local) return alert('Preencha nome e mesa/endereço');
+  const total=carrinho.reduce((s,i)=>s+i.preco,0);
+  const ref=await addDoc(collection(db,'pedidos'),{cliente:nome,local,pagamento:pag,itens:carrinho,total,status:'novo',criadoEm:serverTimestamp(),mesa:MESA_URL||null,tempoEstimado:null,aceitoEm:null});
+  if(MESA_URL){
+    const refMesa=doc(db,'comandas_mesas','MESA'+MESA_URL);
+    const snapMesa=await getDocs(query(collection(db,'comandas_mesas'),where('numero','==',parseInt(MESA_URL))));
+    let mesa={itens:[],total:0,cliente:''}; snapMesa.forEach(d=>mesa=d.data());
+    await setDoc(refMesa,{numero:parseInt(MESA_URL),itens:[...(mesa.itens||[]),...carrinho],total:(mesa.total||0)+total,status:'ocupada',cliente:nome,abertoEm:mesa.abertoEm||serverTimestamp()},{merge:true});
+  }
+  document.getElementById('modal').classList.add('hidden'); document.getElementById('ok').classList.remove('hidden');
+  document.getElementById('okId').textContent='#'+ref.id.slice(0,5).toUpperCase();
+  document.getElementById('detalheOk').innerHTML=carrinho.map(c=>`• ${c.nome} ${c.adicionais?.length?'<br><span class=text-yellow-400>+ '+c.adicionais.join(', ')+'</span>':''} ${c.obs?'<br>Obs: '+c.obs:''} - R$ ${c.preco.toFixed(2)}`).join('<br><br>')+`<br><br><b>Total R$ ${total.toFixed(2)}</b><br>${nome} • ${local} • ${pag}`;
+  document.getElementById('linkAcomp').textContent=location.origin+location.pathname+'?pedido='+ref.id;
+  document.getElementById('mesaClienteTxt').textContent=local;
+  window.linkAcompFinal=location.origin+location.pathname+'?pedido='+ref.id;
+  // AO VIVO
+  onSnapshot(doc(db,'pedidos',ref.id),snap=>{
+    const p=snap.data(); if(!p) return;
+    document.getElementById('tempoCliente').classList.remove('hidden');
+    document.getElementById('statusCliente').textContent='Status: '+p.status.toUpperCase()+(p.status==='preparo'?' 🔥 Em preparo':p.status==='pronto'?' ✅ Pronto!':'');
+    if(p.tempoEstimado){ document.getElementById('tempoClienteTxt').textContent=p.tempoEstimado+' min'; if(p.aceitoEm){ const fim=p.aceitoEm.seconds*1000+p.tempoEstimado*60000; const iv=setInterval(()=>{ const falta=Math.max(0,Math.floor((fim-Date.now())/60000)); const el=document.getElementById('contadorCliente'); if(!el) return clearInterval(iv); el.textContent=falta>0?`Faltam ${falta} min • Sai às ${new Date(fim).toLocaleTimeString()}`:'SAINDO AGORA! 🔥'; },1000); } } else { document.getElementById('tempoClienteTxt').textContent='-- min'; document.getElementById('contadorCliente').textContent='Aguardando cozinha aceitar e informar tempo...'; }
+  });
+  const txt=`NOVO PEDIDO #${ref.id.slice(0,5)}%0A${carrinho.map(i=>`• ${i.nome} ${i.adicionais?.length?'+'+i.adicionais.join(','):''} ${i.obs?'Obs:'+i.obs:''} R$ ${i.preco}`).join('%0A')}%0ATotal R$ ${total}%0ACliente: ${nome}%0ALocal: ${local}%0APag: ${pag}%0AAcompanhe: ${location.origin+location.pathname+'?pedido='+ref.id}`;
+  window.open('https://wa.me/5573999999999?text='+txt,'_blank');
+};
+window.copiarLinkAcomp=()=>{ navigator.clipboard.writeText(window.linkAcompFinal||document.getElementById('linkAcomp').textContent); alert('Link copiado!'); };
+
+// MODO ACOMPANHAMENTO DIRETO ?pedido=ID
+if(PEDIDO_URL){
+  onSnapshot(doc(db,'pedidos',PEDIDO_URL),snap=>{
+    if(!snap.exists()) return;
+    const p=snap.data(); document.getElementById('ok').classList.remove('hidden');
+    document.getElementById('okId').textContent='#'+PEDIDO_URL.slice(0,5).toUpperCase();
+    document.getElementById('tempoCliente').classList.remove('hidden');
+    document.getElementById('statusCliente').textContent='Status: '+p.status.toUpperCase();
+    document.getElementById('tempoClienteTxt').textContent=(p.tempoEstimado||'--')+' min';
+    document.getElementById('mesaClienteTxt').textContent=p.local;
+    document.getElementById('detalheOk').innerHTML=(p.itens||[]).map(c=>`• ${c.nome} ${c.adicionais?.length?'(+'+c.adicionais.join(', ')+')':''} ${c.obs?'Obs:'+c.obs:''} - R$ ${c.preco}`).join('<br>');
+    document.getElementById('linkAcomp').textContent=location.href;
+    window.linkAcompFinal=location.href;
+    if(p.aceitoEm&&p.tempoEstimado){ const fim=p.aceitoEm.seconds*1000+p.tempoEstimado*60000; setInterval(()=>{ const falta=Math.max(0,Math.floor((fim-Date.now())/60000)); const el=document.getElementById('contadorCliente'); if(el) el.textContent=falta>0?`Faltam ${falta} min • Sai às ${new Date(fim).toLocaleTimeString()}`:'SAINDO AGORA! 🔥'; },1000); }
+  });
+}
+</script>
 </body>
 </html>
