@@ -1,0 +1,290 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>PRO - Gestão Completa V4 FINAL</title>
+<script src="https://cdn.tailwindcss.com"></script>
+<style>
+@media print { body *{visibility:hidden} #areaPrint, #areaPrint *{visibility:visible} #areaPrint{position:absolute;left:0;top:0;width:58mm;font-size:12px} }
+</style>
+</head>
+<body class="bg-[#070707] text-white">
+
+<!-- LOGIN COM FUNÇÕES -->
+<div id="login" class="min-h-screen flex items-center justify-center p-4">
+<div class="bg-[#111] border border-white/10 rounded-[24px] p-8 w-full max-w-sm">
+<h1 class="text-3xl font-black">🍔 PRO V4</h1><p class="text-xs text-gray-500 mt-1">Tudo que você pediu</p>
+<select id="funcao" class="w-full mt-6 bg-black border border-white/10 p-4 rounded-xl text-sm"><option value="admin">👑 Admin - Tudo</option><option value="caixa">💰 Caixa</option><option value="garcom">🍽️ Garçom - Só Mesas</option><option value="cozinha">🧑‍🍳 Cozinha - Só KDS</option></select>
+<input id="senha" type="password" placeholder="Senha: admin123" class="w-full mt-3 bg-black border border-white/10 p-4 rounded-xl">
+<button onclick="entrar()" class="w-full mt-4 bg-yellow-400 text-black py-4 rounded-xl font-black">ENTRAR</button>
+<div class="mt-3 text-[10px] text-gray-500">admin/caixa/garcom/cozinha = admin123</div>
+</div>
+</div>
+
+<!-- PAINEL -->
+<div id="painel" class="hidden">
+<header class="sticky top-0 z-20 bg-[#070707] border-b border-white/10 p-3 flex gap-2 overflow-auto">
+<button onclick="aba('dash')" id="b-dash" class="bg-yellow-400 text-black px-4 py-2 rounded-full text-xs font-black shrink-0">📊 Dashboard</button>
+<button onclick="aba('pedidos')" id="b-pedidos" class="bg-white/10 px-4 py-2 rounded-full text-xs font-black shrink-0">📦 Pedidos <span id="badgeNovo" class="bg-red-500 text-white px-2 rounded-full ml-1">0</span></button>
+<button onclick="aba('mesas')" id="b-mesas" class="bg-white/10 px-4 py-2 rounded-full text-xs font-black shrink-0">🍽️ Mesas</button>
+<button onclick="aba('cardapio')" id="b-cardapio" class="bg-white/10 px-4 py-2 rounded-full text-xs font-black shrink-0">📋 Cardápio</button>
+<button onclick="aba('caixa')" id="b-caixa" class="bg-white/10 px-4 py-2 rounded-full text-xs font-black shrink-0">💰 Caixa</button>
+<button onclick="abaKDS()" class="ml-auto bg-green-500 text-black px-4 py-2 rounded-full text-xs font-black shrink-0">🧑‍🍳 KDS</button>
+</header>
+
+<!-- DASH -->
+<div id="aba-dash" class="p-4">
+<div class="grid grid-cols-2 md:grid-cols-4 gap-3">
+<div class="bg-[#151515] rounded-2xl p-4"><p class="text-[10px] text-gray-400">FATURAMENTO HOJE</p><p id="fatHoje" class="text-2xl font-black text-green-400">R$ 0,00</p></div>
+<div class="bg-[#151515] rounded-2xl p-4"><p class="text-[10px] text-gray-400">PEDIDOS</p><p id="qtdHoje" class="text-2xl font-black">0</p></div>
+<div class="bg-[#151515] rounded-2xl p-4"><p class="text-[10px] text-gray-400">TICKET</p><p id="ticket" class="text-2xl font-black text-yellow-400">R$ 0,00</p></div>
+<div class="bg-[#151515] rounded-2xl p-4"><p class="text-[10px] text-gray-400">MESAS</p><p id="mesasOcup" class="text-2xl font-black">0/20</p></div>
+</div>
+<div class="mt-4 bg-[#111] rounded-2xl p-4 flex flex-wrap gap-3">
+<button onclick="gerarMesas()" class="bg-yellow-400 text-black px-5 py-3 rounded-xl font-black text-xs">GERAR MESAS 1-20</button>
+<button onclick="ativarSom()" class="bg-white/10 px-5 py-3 rounded-xl text-xs">🔔 Ativar Beep</button>
+<button onclick="window.print()" class="bg-white/10 px-5 py-3 rounded-xl text-xs">🖨️ Teste Impressora</button>
+</div>
+</div>
+
+<!-- PEDIDOS KANBAN COM TEMPO -->
+<div id="aba-pedidos" class="hidden p-4 grid grid-cols-1 md:grid-cols-4 gap-3">
+<div class="bg-[#111] rounded-2xl p-3"><h3 class="text-xs font-black text-red-400">🔴 NOVOS</h3><div id="col-novo" class="mt-3 space-y-3"></div></div>
+<div class="bg-[#111] rounded-2xl p-3"><h3 class="text-xs font-black text-yellow-400">🟡 PREPARO - COM TEMPO</h3><div id="col-preparo" class="mt-3 space-y-3"></div></div>
+<div class="bg-[#111] rounded-2xl p-3"><h3 class="text-xs font-black text-green-400">🟢 PRONTO</h3><div id="col-pronto" class="mt-3 space-y-3"></div></div>
+<div class="bg-[#111] rounded-2xl p-3"><h3 class="text-xs font-black text-gray-400">⚪ ENTREGUE / CANCELADO</h3><div id="col-entregue" class="mt-3 space-y-3"></div></div>
+</div>
+
+<!-- MESAS COM TEMPO VERMELHO -->
+<div id="aba-mesas" class="hidden p-4"><div id="gridMesas" class="grid grid-cols-1 md:grid-cols-3 lg:grid-cols-4 gap-3"></div></div>
+
+<!-- CARDAPIO COM PAUSAR -->
+<div id="aba-cardapio" class="hidden p-4">
+<div class="bg-[#111] rounded-2xl p-5"><h3 class="font-black">Cardápio + Pausar / Estoque</h3>
+<div class="grid grid-cols-1 md:grid-cols-5 gap-2 mt-4">
+<input id="pNome" placeholder="Nome" class="bg-black border border-white/10 p-3 rounded-xl text-xs">
+<input id="pPreco" type="number" placeholder="Preço" class="bg-black border border-white/10 p-3 rounded-xl text-xs">
+<input id="pCat" placeholder="Categoria" class="bg-black border border-white/10 p-3 rounded-xl text-xs">
+<input id="pDesc" placeholder="Descrição" class="bg-black border border-white/10 p-3 rounded-xl text-xs">
+<button onclick="addProduto()" class="bg-white text-black rounded-xl font-black text-xs">+ Add</button>
+</div>
+<div id="listaProdutos" class="mt-6 grid gap-2"></div>
+</div>
+</div>
+
+<!-- FECHAMENTO CAIXA -->
+<div id="aba-caixa" class="hidden p-4">
+<div class="bg-[#111] rounded-2xl p-6 max-w-2xl">
+<h3 class="font-black text-xl">💰 Fechamento de Caixa</h3>
+<div id="caixaResumo" class="mt-4 grid grid-cols-2 gap-3 text-sm"></div>
+<div class="mt-6 flex gap-2">
+<button onclick="fecharCaixaDia()" class="bg-green-500 text-black px-6 py-3 rounded-xl font-black text-xs">FECHAR DIA</button>
+<button onclick="limparHistorico()" class="bg-white/10 px-6 py-3 rounded-xl text-xs">Limpar Histórico (teste)</button>
+</div>
+<div id="historicoLista" class="mt-6 space-y-2 max-h-[400px] overflow-auto"></div>
+</div>
+</div>
+</div>
+
+<!-- KDS COZINHA COM TEMPO -->
+<div id="kds" class="hidden min-h-screen bg-black p-4">
+<div class="flex justify-between items-center"><h1 class="text-3xl font-black">🧑‍🍳 KDS COZINHA - TEMPO AO VIVO</h1><button onclick="fecharKDS()" class="bg-white/10 px-5 py-2 rounded-full text-xs">Voltar</button></div>
+<div id="kdsGrid" class="mt-6 grid grid-cols-1 md:grid-cols-3 gap-4"></div>
+</div>
+
+<!-- MODAL COMANDA PRO -->
+<div id="modalComanda" class="hidden fixed inset-0 bg-black/90 z-30 p-4 flex items-center justify-center">
+<div class="bg-[#1a1a1a] rounded-[24px] w-full max-w-lg p-6 max-h-[92vh] overflow-auto">
+<div class="flex justify-between"><div><h3 id="tituloMesa" class="font-black text-2xl">MESA</h3><p id="tempoMesa" class="text-xs">--</p><p id="clienteMesa" class="text-xs text-yellow-400 font-bold"></p></div><button onclick="fecharComanda()" class="bg-white/10 w-8 h-8 rounded-full">✕</button></div>
+<div id="itensComanda" class="mt-4 space-y-2"></div>
+<div class="mt-4 bg-black rounded-2xl p-4 border border-white/10">
+<div class="flex justify-between text-xs text-gray-400"><span>Subtotal (sem taxas)</span><span id="subMesa">R$ 0,00</span></div>
+<div class="flex gap-2 mt-2"><input id="descMesa" type="number" placeholder="Desconto %" class="w-24 bg-[#111] border border-white/10 p-2 rounded-xl text-xs"><button onclick="aplicarDesc()" class="bg-white/10 px-3 rounded-xl text-xs">Aplicar</button></div>
+<div class="flex justify-between text-xl font-black mt-3"><span>Total</span><span id="totalMesa" class="text-green-400">R$ 0,00</span></div>
+<div class="flex gap-2 mt-2"><button onclick="dividirConta()" class="flex-1 bg-white/10 py-2 rounded-xl text-xs font-black">👥 Dividir</button><span id="divResult" class="text-xs text-gray-400"></span></div>
+</div>
+<div class="mt-4 grid grid-cols-3 gap-2"><input id="addNome" placeholder="Item" class="col-span-2 bg-black border border-white/10 p-3 rounded-xl text-xs"><input id="addPreco" type="number" placeholder="R$" class="bg-black border border-white/10 p-3 rounded-xl text-xs"></div>
+<button onclick="addItemMesa()" class="w-full mt-2 bg-white text-black py-3 rounded-xl font-black text-xs">+ Adicionar na Comanda</button>
+<div class="mt-3 grid grid-cols-4 gap-2">
+<button onclick="copiarLink(mesaAtiva)" class="bg-white/10 py-3 rounded-xl text-[10px] font-black">🔗 LINK</button>
+<button onclick="gerarQR(mesaAtiva)" class="bg-white/10 py-3 rounded-xl text-[10px] font-black">📱 QR</button>
+<button onclick="gravarNFC(mesaAtiva)" class="bg-yellow-400 text-black py-3 rounded-xl text-[10px] font-black">💳 NFC</button>
+<button onclick="imprimirMesa(mesaAtiva)" class="bg-white/10 py-3 rounded-xl text-[10px] font-black">🖨️ Imprimir</button>
+</div>
+<div class="grid grid-cols-2 gap-2 mt-3">
+<button onclick="fecharConta()" class="bg-green-500 text-black py-4 rounded-xl font-black text-sm">💰 FECHAR CONTA</button>
+<button onclick="limparMesa()" class="bg-red-500/20 text-red-400 py-4 rounded-xl font-black text-sm">ZERAR MESA</button>
+</div>
+</div>
+</div>
+
+<!-- AREA IMPRESSÃO 58mm -->
+<div id="areaPrint" class="hidden">
+<div id="printConteudo" style="font-family:monospace"></div>
+</div>
+
+<audio id="beep" src="https://actions.google.com/sounds/v1/alarms/beep_short.ogg" preload="auto"></audio>
+
+<script type="module">
+import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-app.js";
+import { getFirestore, collection, onSnapshot, doc, updateDoc, setDoc, deleteDoc, query, orderBy, serverTimestamp, where, getDocs, getDoc } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js";
+const firebaseConfig={apiKey:"AIzaSyBBnA9orBCf3j1_3nRHWcIctLe7aKMgcI8",authDomain:"mapapet-ad359.firebaseapp.com",projectId:"mapapet-ad359",storageBucket:"mapapet-ad359.firebasestorage.app",messagingSenderId:"268931015194",appId:"1:268931015194:web:5ae634751c3be46ebe67a3"};
+const app=initializeApp(firebaseConfig); const db=getFirestore(app);
+let somAtivo=false; let ultimoCount=0; let role='admin';
+window.entrar=()=>{
+  const senha=document.getElementById('senha').value; if(senha!=='admin123') return alert('Senha errada');
+  role=document.getElementById('funcao').value;
+  document.getElementById('login').classList.add('hidden');
+  document.getElementById('painel').classList.remove('hidden');
+  if(role==='cozinha'){ abaKDS(); return; }
+  if(role==='garcom'){ aba('mesas'); document.getElementById('b-dash').classList.add('hidden'); document.getElementById('b-pedidos').classList.add('hidden'); document.getElementById('b-cardapio').classList.add('hidden'); document.getElementById('b-caixa').classList.add('hidden'); }
+  init();
+}
+window.aba=(q)=>{
+  ['dash','pedidos','mesas','cardapio','caixa'].forEach(a=>{document.getElementById('aba-'+a).classList.toggle('hidden',a!==q); document.getElementById('b-'+a).classList.toggle('bg-yellow-400',a===q); document.getElementById('b-'+a).classList.toggle('text-black',a===q); document.getElementById('b-'+a).classList.toggle('bg-white/10',a!==q);});
+}
+window.abaKDS=()=>{document.getElementById('login').classList.add('hidden');document.getElementById('painel').classList.add('hidden');document.getElementById('kds').classList.remove('hidden');loadKDS();};
+window.fecharKDS=()=>{document.getElementById('kds').classList.add('hidden');document.getElementById('painel').classList.remove('hidden');}
+window.ativarSom=()=>{somAtivo=true; document.getElementById('beep').play().then(()=>alert('Beep ativado!'));};
+
+function init(){loadPedidos();loadMesas();loadProdutos();loadDash();loadKDS();loadCaixa();}
+
+function loadDash(){
+  onSnapshot(collection(db,'pedidos'), snap=>{
+    let fat=0; let hoje=new Date().toDateString(); snap.forEach(d=>{let p=d.data(); let data=p.criadoEm?new Date(p.criadoEm.seconds*1000).toDateString():''; if(data===hoje) fat+=p.total||0;});
+    document.getElementById('fatHoje').textContent='R$ '+fat.toFixed(2); document.getElementById('qtdHoje').textContent=snap.size; document.getElementById('ticket').textContent=snap.size>0?'R$ '+(fat/snap.size).toFixed(2):'R$ 0,00';
+    if(somAtivo && snap.size>ultimoCount){document.getElementById('beep').play();}
+    ultimoCount=snap.size;
+  });
+  onSnapshot(collection(db,'comandas_mesas'), snap=>{let ocup=0; snap.forEach(d=>{if(d.data().itens?.length>0)ocup++;}); document.getElementById('mesasOcup').textContent=ocup+'/20';});
+}
+
+// PEDIDOS COM TEMPO ESTIMADO
+function loadPedidos(){
+  onSnapshot(query(collection(db,'pedidos'),orderBy('criadoEm','desc')), snap=>{
+    const cols={novo:document.getElementById('col-novo'),preparo:document.getElementById('col-preparo'),pronto:document.getElementById('col-pronto'),entregue:document.getElementById('col-entregue')}; Object.values(cols).forEach(c=>c.innerHTML=''); let novos=0;
+    snap.forEach(d=>{
+      const p=d.data(); const id=d.id; const st=p.status||'novo'; if(st==='novo') novos++;
+      const numMesa=p.local?.match(/mesa\s*(\d+)/i)?.[1];
+      let tempoHTML='';
+      if(p.tempoEstimado && p.aceitoEm && st==='preparo'){
+        const aceito=p.aceitoEm.seconds*1000; const fim=aceito+p.tempoEstimado*60000; const falta=Math.max(0,Math.floor((fim-Date.now())/60000)); const atrasado=Date.now()>fim;
+        tempoHTML=`<div class="mt-2 ${atrasado?'bg-red-500 text-white animate-pulse':'bg-yellow-400 text-black'} rounded-full px-3 py-1 text-center font-black text-[11px]">⏱️ ${atrasado?'ATRASADO!':falta+' min restantes'} (estimado ${p.tempoEstimado} min)</div>`;
+      }
+      const cancelMotivo=p.motivoCancel?' Motivo: '+p.motivoCancel:'';
+      const el=document.createElement('div'); el.className='bg-black border border-white/10 rounded-xl p-3 text-xs';
+      el.innerHTML=`<b>#${id.slice(0,5).toUpperCase()} ${numMesa?'• MESA '+numMesa:''}</b><p class="font-black mt-1">${p.cliente} - ${p.local}</p><p class="text-gray-400">${(p.itens||[]).map(i=>`${i.nome}${i.adicionais?.length?' (+'+i.adicionais.join(', ')+')':''} ${i.obs?'['+i.obs+']':''}`).join(', ')}</p><p class="text-yellow-400 font-black">R$ ${p.total?.toFixed(2)} • ${p.pagamento}</p>${tempoHTML}<p class="text-red-400 text-[10px]">${cancelMotivo}</p>
+      <div class="flex gap-1 mt-2 flex-wrap">
+      ${st==='novo'?`<button onclick="muda('${id}','preparo')" class="bg-yellow-400 text-black px-3 py-1 rounded-full font-black">Aceitar + Tempo</button><button onclick="cancelarPedido('${id}')" class="bg-red-500/20 text-red-400 px-3 py-1 rounded-full">Cancelar</button>`:''}
+      ${st==='preparo'?`<button onclick="muda('${id}','pronto')" class="bg-green-500 text-black px-3 py-1 rounded-full font-black">Pronto</button><button onclick="imprimirPedido('${id}')" class="bg-white/10 px-3 py-1 rounded-full">🖨️</button>`:''}
+      ${st==='pronto'?`<button onclick="muda('${id}','entregue')" class="bg-white text-black px-3 py-1 rounded-full font-black">Entregar</button>`:''}
+      </div>`;
+      cols[st==='cancelado'?'entregue':st]?.appendChild(el);
+    });
+    document.getElementById('badgeNovo').textContent=novos;
+  });
+}
+window.muda=async(id,s)=>{
+  let tempoMin=0;
+  if(s==='preparo'){
+    const t=prompt('⏱️ TEMPO DE PREPARO em minutos?\nEx: 10, 15, 20, 30','15');
+    if(t===null) return; tempoMin=parseInt(t)||15;
+  }
+  const ref=doc(db,'pedidos',id); const snap=await getDoc(ref); const p=snap.data();
+  await updateDoc(ref,{status:s,tempoEstimado:s==='preparo'?tempoMin:p.tempoEstimado||null,aceitoEm:s==='preparo'?serverTimestamp():p.aceitoEm||null,prontoEm:s==='pronto'?serverTimestamp():null});
+  if(s==='preparo'){
+    const match=p.local?.match(/mesa\s*(\d+)/i); if(match){
+      const num=match[1]; const refMesa=doc(db,'comandas_mesas','MESA'+num);
+      const snapMesa=await getDocs(query(collection(db,'comandas_mesas'),where('numero','==',parseInt(num))));
+      let mesa={itens:[],total:0,cliente:''}; snapMesa.forEach(d=>mesa=d.data());
+      const novosItens=[...(mesa.itens||[]),...(p.itens||[])]; const novoTotal=(mesa.total||0)+(p.total||0);
+      await setDoc(refMesa,{numero:parseInt(num),itens:novosItens,total:novoTotal,status:'ocupada',cliente:p.cliente,abertoEm:mesa.abertoEm||serverTimestamp()},{merge:true});
+    }
+    imprimirPedido(id);
+  }
+}
+window.cancelarPedido=async(id)=>{
+  const motivo=prompt('Motivo do cancelamento? (cliente desistiu, sem estoque, erro)','');
+  if(motivo===null) return;
+  await updateDoc(doc(db,'pedidos',id),{status:'cancelado',motivoCancel:motivo,canceladoEm:serverTimestamp()});
+}
+window.imprimirPedido=async(id)=>{
+  const snap=await getDoc(doc(db,'pedidos',id)); if(!snap.exists()) return;
+  const p=snap.data();
+  const html=`COZINHA - PEDIDO #${id.slice(0,5).toUpperCase()}<br>Mesa: ${p.local} Cliente: ${p.cliente}<br>--------------------------<br>${(p.itens||[]).map(i=>`${i.nome} ${i.adicionais?.length?' +'+i.adicionais.join(','):''} ${i.obs?' OBS:'+i.obs:''}`).join('<br>')}<br>--------------------------<br>Total R$ ${p.total}<br>Tempo: ${p.tempoEstimado||'-'} min<br>${new Date().toLocaleString()}`;
+  document.getElementById('printConteudo').innerHTML=html; window.print();
+}
+
+// MESAS COM TEMPO VERMELHO
+let mesaAtiva=null; let descontoAtual=0;
+window.gerarMesas=async()=>{for(let i=1;i<=20;i++){await setDoc(doc(db,'comandas_mesas','MESA'+i),{numero:i,itens:[],total:0,status:'livre',cliente:'',abertoEm:null},{merge:true});} alert('Mesas 1-20 geradas');}
+function loadMesas(){
+  onSnapshot(collection(db,'comandas_mesas'), snap=>{
+    const grid=document.getElementById('gridMesas'); grid.innerHTML='';
+    snap.forEach(d=>{
+      const m=d.data(); const ocup=m.itens?.length>0;
+      let tempo=''; let classe='bg-[#111] border-white/10';
+      if(ocup){
+        classe='bg-yellow-400 text-black border-yellow-400';
+        if(m.abertoEm){const diff=Math.floor((Date.now()-m.abertoEm.seconds*1000)/60000); tempo=diff+' min'; if(diff>90) classe='bg-red-500 text-white border-red-500 animate-pulse';}
+      }
+      const el=document.createElement('div'); el.className=`rounded-2xl p-4 border ${classe} cursor-pointer`;
+      el.innerHTML=`<div onclick="abrirComanda(${m.numero})"><p class="font-black">MESA ${m.numero} <span class="text-[10px]">${tempo} ${tempo&&parseInt(tempo)>90?'(ATRASADA)':''}</span></p><p class="text-xs mt-1">${ocup? (m.cliente?'Cliente: '+m.cliente+' • ':'')+m.itens.length+' itens • R$ '+m.total.toFixed(2) : 'Livre - Link NFC'}</p></div><div class="mt-3 grid grid-cols-4 gap-1"><button onclick="copiarLink(${m.numero})" class="bg-black/20 text-[9px] py-2 rounded-full">LINK</button><button onclick="gerarQR(${m.numero})" class="bg-black/20 text-[9px] py-2 rounded-full">QR</button><button onclick="gravarNFC(${m.numero})" class="bg-white text-black text-[9px] py-2 rounded-full font-black">NFC</button><button onclick="imprimirMesa(${m.numero})" class="bg-black/20 text-[9px] py-2 rounded-full">🖨️</button></div>`;
+      grid.appendChild(el);
+    });
+  });
+}
+window.abrirComanda=async(num)=>{mesaAtiva=num;descontoAtual=0;document.getElementById('descMesa').value='';const snap=await getDocs(query(collection(db,'comandas_mesas'),where('numero','==',num)));let data={numero:num,itens:[],total:0,cliente:''};snap.forEach(d=>data=d.data());document.getElementById('tituloMesa').textContent='MESA '+num;document.getElementById('clienteMesa').textContent=data.cliente?'Cliente: '+data.cliente:'';if(data.abertoEm){const diff=Math.floor((Date.now()-data.abertoEm.seconds*1000)/60000);document.getElementById('tempoMesa').textContent='Aberta há '+diff+' min'+(diff>90?' - ATENÇÃO ATRASADA':'' );}renderComanda(data);document.getElementById('modalComanda').classList.remove('hidden');}
+function renderComanda(m){document.getElementById('itensComanda').innerHTML=(m.itens||[]).map((it,i)=>`<div class="flex justify-between bg-black/50 p-3 rounded-xl text-xs"><span>${it.nome} ${it.adicionais?.length?' +'+it.adicionais.join(','):''} ${it.obs?' ['+it.obs+']':''} - R$ ${it.preco}</span><button onclick="remItem(${i})" class="text-red-400">x</button></div>`).join('')||'<p class="text-gray-500 text-xs">Vazia</p>';const sub=m.total||0;const totalDesc=sub*(1-descontoAtual/100);document.getElementById('subMesa').textContent='R$ '+sub.toFixed(2);document.getElementById('totalMesa').textContent='R$ '+totalDesc.toFixed(2);}
+window.addItemMesa=async()=>{const nome=document.getElementById('addNome').value.trim();const preco=parseFloat(document.getElementById('addPreco').value);if(!nome||!preco)return;const snap=await getDocs(query(collection(db,'comandas_mesas'),where('numero','==',mesaAtiva)));let cur={itens:[],total:0};snap.forEach(d=>cur=d.data());cur.itens.push({nome,preco});cur.total=(cur.total||0)+preco;await updateDoc(doc(db,'comandas_mesas','MESA'+mesaAtiva),{itens:cur.itens,total:cur.total,status:'ocupada',abertoEm:cur.abertoEm||serverTimestamp()});document.getElementById('addNome').value='';document.getElementById('addPreco').value='';renderComanda(cur);};
+window.remItem=async(i)=>{const snap=await getDocs(query(collection(db,'comandas_mesas'),where('numero','==',mesaAtiva)));let cur={};snap.forEach(d=>cur=d.data());cur.total-=cur.itens[i].preco;cur.itens.splice(i,1);await updateDoc(doc(db,'comandas_mesas','MESA'+mesaAtiva),{itens:cur.itens,total:cur.total,status:cur.itens.length===0?'livre':'ocupada'});renderComanda(cur);};
+window.aplicarDesc=()=>{descontoAtual=parseFloat(document.getElementById('descMesa').value)||0;abrirComanda(mesaAtiva);};
+window.dividirConta=()=>{const totalTxt=document.getElementById('totalMesa').textContent.replace('R$ ','');const total=parseFloat(totalTxt);const pessoas=parseInt(prompt('Dividir por quantas pessoas?','2'));if(!pessoas)return;document.getElementById('divResult').textContent='R$ '+(total/pessoas).toFixed(2)+' por pessoa';};
+window.fecharConta=async()=>{const snap=await getDocs(query(collection(db,'comandas_mesas'),where('numero','==',mesaAtiva)));let cur={};snap.forEach(d=>cur=d.data());const totalDesc=(cur.total||0)*(1-descontoAtual/100);const txt=`MESA ${mesaAtiva} - ${cur.cliente||''}%0A${cur.itens.map(i=>`• ${i.nome} R$ ${i.preco}`).join('%0A')}%0ASubtotal R$ ${cur.total.toFixed(2)}%0ADesc ${descontoAtual}% %0ATOTAL R$ ${totalDesc.toFixed(2)}`;window.open('https://wa.me/5573999999999?text='+encodeURIComponent(txt),'_blank');};
+window.limparMesa=async()=>{if(!confirm('Zerar mesa '+mesaAtiva+'? Vai salvar no histórico de caixa'))return;const snap=await getDocs(query(collection(db,'comandas_mesas'),where('numero','==',mesaAtiva)));let cur={};snap.forEach(d=>cur=d.data());await setDoc(doc(collection(db,'historico_vendas')),{...cur,mesa:mesaAtiva,desconto:descontoAtual,fechadoEm:serverTimestamp(),totalFinal:(cur.total||0)*(1-descontoAtual/100)});await updateDoc(doc(db,'comandas_mesas','MESA'+mesaAtiva),{itens:[],total:0,status:'livre',cliente:'',abertoEm:null});renderComanda({itens:[],total:0});};
+window.fecharComanda=()=>document.getElementById('modalComanda').classList.add('hidden');
+window.copiarLink=(num)=>{const link=`https://manojhon12344321-ship-it.github.io/meucardapio/?mesa=${num}`;navigator.clipboard.writeText(link);alert('Link Mesa '+num+' copiado!');};
+window.gerarQR=(num)=>{const link=`https://manojhon12344321-ship-it.github.io/meucardapio/?mesa=${num}`;window.open(`https://api.qrserver.com/v1/create-qr-code/?size=500x500&data=${encodeURIComponent(link)}`,'_blank');};
+window.gravarNFC=async(num)=>{if(!('NDEFReader' in window)){alert('No iPhone use app NFC Tools. Link: https://manojhon12344321-ship-it.github.io/meucardapio/?mesa='+num);return;}try{const ndef=new NDEFReader();const link=`https://manojhon12344321-ship-it.github.io/meucardapio/?mesa=${num}`;await ndef.write({records:[{recordType:"url",data:link}]});alert('✅ TAG MESA '+num+' GRAVADA!');}catch(e){alert('Erro NFC: '+e);}};
+window.imprimirMesa=async(num)=>{const snap=await getDocs(query(collection(db,'comandas_mesas'),where('numero','==',num)));let cur={};snap.forEach(d=>cur=d.data());const html=`MESA ${num} - ${cur.cliente||''}<br>--------------------------<br>${(cur.itens||[]).map(i=>`${i.nome} R$ ${i.preco}`).join('<br>')}<br>--------------------------<br>Total R$ ${cur.total}<br>${new Date().toLocaleString()}`;document.getElementById('printConteudo').innerHTML=html;window.print();};
+
+// CARDAPIO COM PAUSAR
+function loadProdutos(){onSnapshot(collection(db,'cardapio'),snap=>{const l=document.getElementById('listaProdutos');l.innerHTML='';snap.forEach(d=>{const p=d.data();const el=document.createElement('div');el.className=`bg-black border ${p.ativo===false?'border-red-500/50':'border-white/10'} rounded-xl p-3 flex justify-between text-xs`;el.innerHTML=`<div><b>${p.nome}</b> • R$ ${p.preco} • ${p.categoria||'Geral'} • ${p.ativo===false?'<span class=text-red-400>PAUSADO</span>':'ATIVO'}</div><div class="flex gap-2"><button onclick="toggleProd('${d.id}',${p.ativo!==false})" class="${p.ativo===false?'bg-green-500':'bg-yellow-400'} text-black px-3 py-1 rounded-full font-black">${p.ativo===false?'Ativar':'Pausar'}</button><button onclick="delProd('${d.id}')" class="text-red-400">Excluir</button></div>`;l.appendChild(el);});});}
+window.addProduto=async()=>{const nome=document.getElementById('pNome').value.trim();const preco=parseFloat(document.getElementById('pPreco').value);const cat=document.getElementById('pCat').value.trim()||'Geral';const desc=document.getElementById('pDesc').value.trim();if(!nome||!preco)return;await setDoc(doc(collection(db,'cardapio')),{nome,preco,categoria:cat,desc,ativo:true,criadoEm:serverTimestamp()});document.getElementById('pNome').value='';document.getElementById('pPreco').value='';};
+window.delProd=async(id)=>{if(!confirm('Excluir?'))return;await deleteDoc(doc(db,'cardapio',id));};
+window.toggleProd=async(id,atual)=>{await updateDoc(doc(db,'cardapio',id),{ativo:!atual});};
+
+// CAIXA
+function loadCaixa(){
+  onSnapshot(query(collection(db,'historico_vendas'),orderBy('fechadoEm','desc')),snap=>{
+    let pix=0,din=0,car=0,total=0,desc=0;
+    let html=''; snap.forEach(d=>{const v=d.data(); total+=v.totalFinal||v.total||0; desc+= (v.total||0)*(v.desconto||0)/100; html+=`<div class="bg-black border border-white/10 rounded-xl p-3 text-xs flex justify-between"><span>MESA ${v.mesa} • ${v.cliente||''} • ${v.fechadoEm?new Date(v.fechadoEm.seconds*1000).toLocaleTimeString():''}</span><span class="text-green-400">R$ ${(v.totalFinal||v.total||0).toFixed(2)}</span></div>`;});
+    document.getElementById('caixaResumo').innerHTML=`<div class="bg-[#1a1a1a] rounded-xl p-3"><p class="text-[10px] text-gray-400">TOTAL VENDIDO</p><p class="text-xl font-black text-green-400">R$ ${total.toFixed(2)}</p></div><div class="bg-[#1a1a1a] rounded-xl p-3"><p class="text-[10px] text-gray-400">DESCONTOS</p><p class="text-xl font-black text-red-400">R$ ${desc.toFixed(2)}</p></div><div class="bg-[#1a1a1a] rounded-xl p-3 col-span-2"><p class="text-[10px] text-gray-400">VENDAS HOJE: ${snap.size} comandas</p></div>`;
+    document.getElementById('historicoLista').innerHTML=html||'<p class=text-gray-500 text-xs>Nenhuma venda fechada hoje</p>';
+  });
+  onSnapshot(collection(db,'pedidos'),snap=>{
+    let pix=0,din=0,car=0; snap.forEach(d=>{const p=d.data(); if(p.pagamento?.toLowerCase().includes('pix')) pix+=p.total||0; else if(p.pagamento?.toLowerCase().includes('dinheiro')) din+=p.total||0; else car+=p.total||0;});
+  });
+}
+window.fecharCaixaDia=()=>{const resumo=document.getElementById('caixaResumo').innerText; const txt=`FECHAMENTO ${new Date().toLocaleDateString()}%0A${encodeURIComponent(resumo)}`; window.open('https://wa.me/5573999999999?text='+txt,'_blank'); alert('Fechamento copiado!');}
+window.limparHistorico=async()=>{if(!confirm('Limpar histórico de testes?'))return; const snap=await getDocs(collection(db,'historico_vendas')); snap.forEach(d=>deleteDoc(d.ref));}
+
+// KDS COM TEMPO
+function loadKDS(){
+  onSnapshot(query(collection(db,'pedidos'),where('status','in',['novo','preparo'])), snap=>{
+    const grid=document.getElementById('kdsGrid'); if(!grid) return; grid.innerHTML='';
+    snap.forEach(d=>{
+      const p=d.data(); let tempoHTML='';
+      if(p.tempoEstimado && p.aceitoEm){
+        const fim=p.aceitoEm.seconds*1000+p.tempoEstimado*60000; const falta=Math.max(0,Math.floor((fim-Date.now())/60000)); const atrasado=Date.now()>fim;
+        tempoHTML=`<div class="mt-2 ${atrasado?'bg-red-500':'bg-yellow-400 text-black'} rounded-full px-4 py-2 text-center font-black">${atrasado?'ATRASADO!':falta+' min restantes'}</div>`;
+      }
+      const el=document.createElement('div'); el.className=`rounded-2xl p-5 border-2 ${p.status==='novo'?'border-red-500 bg-red-500/10':'border-yellow-500 bg-yellow-500/10'}`;
+      el.innerHTML=`<p class="font-black text-2xl">#${d.id.slice(0,5).toUpperCase()} ${p.local}</p><p class="font-bold mt-2">${p.cliente} - ${p.pagamento}</p><div class="mt-3 text-[15px]">${(p.itens||[]).map(i=>`• ${i.nome} ${i.adicionais?.length?' +'+i.adicionais.join(','):''} ${i.obs?'<b>[OBS: '+i.obs+']</b>':''}`).join('<br>')}</div>${tempoHTML}<p class="mt-3 text-sm text-gray-400">${p.obs||''}</p><div class="flex gap-2 mt-4"><button onclick="muda('${d.id}','${p.status==='novo'?'preparo':'pronto'}')" class="flex-1 bg-white text-black py-4 rounded-xl font-black">${p.status==='novo'?'ACEITAR + TEMPO':'PRONTO'}</button><button onclick="imprimirPedido('${d.id}')" class="bg-white/10 px-5 py-4 rounded-xl">🖨️</button></div>`;
+      grid.appendChild(el);
+    });
+  });
+}
+</script>
+</body>
+</html>
