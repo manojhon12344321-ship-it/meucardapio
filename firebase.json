@@ -8,12 +8,19 @@
     ],
     "rewrites": [
       {
-        "source": "/m/**",
-        "destination": "/m/index.html"
-      },
+        "source": "**",
+        "destination": "/index.html"
+      }
+    ],
+    "headers": [
       {
-        "source": "/painel/**",
-        "destination": "/painel/index.html"
+        "source": "/sw.js",
+        "headers": [
+          {
+            "key": "Service-Worker-Allowed",
+            "value": "/"
+          }
+        ]
       }
     ]
   },
